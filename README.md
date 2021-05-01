@@ -1,3 +1,2 @@
 # CodeAcademy
-dddd
-this is just a test
+A small project for managing expenses and income
