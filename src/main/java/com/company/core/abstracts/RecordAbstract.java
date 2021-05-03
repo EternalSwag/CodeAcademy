@@ -10,10 +10,10 @@ import java.util.UUID;
 public abstract class RecordAbstract {
 
     private UUID id;
-    private BigDecimal sum;
     private LocalDateTime dateTime;
+    private BigDecimal sum;
     private TransactionType transactionType;
-    private String additionalInfo;
     private PaymentMethod paymentMethod;
+    private String additionalInfo;
 
 }
