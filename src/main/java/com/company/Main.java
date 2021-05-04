@@ -1,7 +1,11 @@
 package com.company;
+import com.company.console.Menu;
+import com.company.core.Budget;
+import com.company.core.enums.PaymentMethod;
+import com.company.core.enums.TransactionCategory;
 
-import com.company.console.UserConsoleInput;
-
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Scanner;
 
 public class Main {
@@ -9,12 +13,17 @@ public class Main {
     private static Scanner sc = new Scanner(System.in);
 
     public static void main(String[] args) {
-        System.out.println("Hello Rimgaudas! master");
-        System.out.println("Hello Rimgaudas! test branch");
-
-        UserConsoleInput userInput = new UserConsoleInput(sc);
-
-
-        userInput.enterDateTime("sdadsa");
+        Menu m = new Menu(prepareBudget());
+        m.entryMenu();
     }
+
+    private static Budget prepareBudget()
+    {
+        Budget sampleBudget = new Budget();
+        sampleBudget.addIncome(LocalDateTime.now(), new BigDecimal("2500"), TransactionCategory.ASSET, PaymentMethod.BANK_TRANSACTION, "Salary");
+        sampleBudget.addIncome(LocalDateTime.now(), new BigDecimal("2800"), TransactionCategory.ASSET, PaymentMethod.BANK_TRANSACTION, "Salary");
+        sampleBudget.addExpenditure(LocalDateTime.now(), new BigDecimal("50"), TransactionCategory.EXPENSES, PaymentMethod.CASH, "bottle of whiskey");
+        return sampleBudget;
+    }
+
 }

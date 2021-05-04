@@ -1,7 +1,9 @@
 package com.company.console;
 
+import com.company.core.enums.PaymentMethod;
+import com.company.core.enums.TransactionCategory;
+
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -51,8 +53,8 @@ public class UserConsoleInput {
 
     public LocalDateTime enterDateTime(String message) {
         System.out.println(message);
-        //  System.out.println("Enter date and time (format - yyyy-MM-dd HH:mm");
-        //  System.out.println("Enter \"Now\" to use current date and time");
+        System.out.println("Enter date and time (format - yyyy-MM-dd HH:mm)");
+        System.out.println("Enter \"Now\" to use current date and time");
 
         LocalDateTime resultDateTime = LocalDateTime.now();
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
@@ -74,5 +76,63 @@ public class UserConsoleInput {
                 System.out.println("Wrong date time input. Format is yyyy-MM-dd HH:mm");
             }
         } while (true);
+    }
+
+    public PaymentMethod enterPaymentMethod(String message)
+    {
+        System.out.println(message);
+        System.out.println("1. Bank transaction");
+        System.out.println("2. Cash");
+
+        while (sc.hasNext()) {
+            if (sc.hasNextInt()) {
+                int i = Integer.parseInt(sc.next());
+                switch(i){
+                    case 1:
+                        return PaymentMethod.BANK_TRANSACTION;
+                    case 2:
+                        return PaymentMethod.CASH;
+                    default:
+                        System.out.println("Wrong input, pick number out of possible options");
+                }
+            } else {
+                System.out.println("Value must be numeric value! Try again");
+            }
+            System.out.println("" + sc.next());
+        }
+        return null;
+    }
+
+
+    public TransactionCategory enterCategory(String message) {
+        System.out.print(message);
+        System.out.println("1. ASSET");
+        System.out.println("2. LIABILITY");
+        System.out.println("3. EQUITY");
+        System.out.println("4. REVENUE");
+        System.out.println("5. EXPENSES");
+        while (sc.hasNext()) {
+            if (sc.hasNextInt()) {
+                int i = Integer.parseInt(sc.next());
+                switch(i){
+                    case 1:
+                        return TransactionCategory.ASSET;
+                    case 2:
+                        return TransactionCategory.LIABILITY;
+                    case 3:
+                        return TransactionCategory.EQUITY;
+                    case 4:
+                        return TransactionCategory.REVENUE;
+                    case 5:
+                        return TransactionCategory.EXPENSES;
+                    default:
+                        System.out.println("Wrong input, pick number out of possible options");
+                }
+            } else {
+                System.out.println("Value must be numeric value! Try again");
+            }
+            System.out.println("" + sc.next());
+        }
+        return null;
     }
 }
