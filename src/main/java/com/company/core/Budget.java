@@ -35,7 +35,20 @@ public class Budget {
         expenseRecordsTotal++;
     }
 
+    public String listAllIncome()
+    {
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < incomeRecordsTotal; i++) {
+            result.append((i) + ". " + income[i].toString() +"\n");
+        }
+        return result.toString();
+    }
 
-
-
+    public String listAllExpenses() {
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < expenseRecordsTotal; i++) {
+            result.append((i) + ". " + expenses[i].toString() +"\n");
+        }
+        return result.toString();
+    }
 }

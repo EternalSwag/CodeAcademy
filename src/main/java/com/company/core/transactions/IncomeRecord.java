@@ -13,4 +13,9 @@ public class IncomeRecord extends RecordAbstract {
     public IncomeRecord(LocalDateTime dateTime, BigDecimal sum, TransactionCategory transactionCategory, PaymentMethod paymentMethod, String additionalInfo) {
         super(dateTime, sum, transactionCategory, paymentMethod, additionalInfo);
     }
+
+    @Override
+    public String toString() {
+        return "Income: " + super.toString();
+    }
 }

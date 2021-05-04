@@ -6,6 +6,7 @@ import com.company.core.enums.TransactionType;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 public abstract class RecordAbstract {
@@ -23,5 +24,20 @@ public abstract class RecordAbstract {
         this.transactionCategory = transactionCategory;
         this.paymentMethod = paymentMethod;
         this.additionalInfo = additionalInfo;
+    }
+
+    @Override
+    public String toString() {
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String formatDateTime = dateTime.format(formatter);
+
+        return
+                formatDateTime +
+                        ", sum=" + sum +
+                        ", transactionCategory=" + transactionCategory +
+                        ", paymentMethod=" + paymentMethod +
+                        ", " + additionalInfo;
+
     }
 }

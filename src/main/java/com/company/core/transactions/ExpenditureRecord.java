@@ -14,4 +14,8 @@ public class ExpenditureRecord extends RecordAbstract {
         super(dateTime, sum, transactionCategory, paymentMethod, additionalInfo);
     }
 
+    @Override
+    public String toString() {
+        return "Expense: " + super.toString();
+    }
 }

@@ -60,29 +60,31 @@ public class Menu {
 
     private void listAllExpenses() {
         System.out.println("Total expenses");
+        System.out.println(budget.listAllExpenses());
     }
 
     private void listAllIncome() {
         System.out.println("Total income");
+        System.out.println(budget.listAllIncome());
     }
 
     private void addExpenseRecord() {
         System.out.println("Add expense record");
-        LocalDateTime providedDate = userInput.enterDateTime("Enter date");
-        BigDecimal providedSum = userInput.enterBigDecimal("Enter sum");
-        TransactionCategory providedCategory = userInput.enterCategory("Choose category");
-        PaymentMethod providedPaymentMethod = userInput.enterPaymentMethod("Choose payment method");
-        String providedInfo = userInput.enterString("Enter additional info");
+        LocalDateTime providedDate = userInput.enterDateTime();
+        BigDecimal providedSum = userInput.enterBigDecimal("Enter sum: ");
+        TransactionCategory providedCategory = userInput.enterCategory();
+        PaymentMethod providedPaymentMethod = userInput.enterPaymentMethod();
+        String providedInfo = userInput.enterString("Enter additional info: ");
         budget.addExpenditure(providedDate, providedSum, providedCategory, providedPaymentMethod, providedInfo);
     }
 
     private void addIncomeRecord() {
         System.out.println("Add income record");
-        LocalDateTime providedDate = userInput.enterDateTime("Enter date");
-        BigDecimal providedSum = userInput.enterBigDecimal("Enter sum");
-        TransactionCategory providedCategory = userInput.enterCategory("Choose category");
-        PaymentMethod providedPaymentMethod = userInput.enterPaymentMethod("Choose payment method");
-        String providedInfo = userInput.enterString("Enter additional info");
+        LocalDateTime providedDate = userInput.enterDateTime();
+        BigDecimal providedSum = userInput.enterBigDecimal("Enter sum: ");
+        TransactionCategory providedCategory = userInput.enterCategory();
+        PaymentMethod providedPaymentMethod = userInput.enterPaymentMethod();
+        String providedInfo = userInput.enterString("Enter additional info: ");
         budget.addIncome(providedDate, providedSum, providedCategory, providedPaymentMethod, providedInfo);
     }
 

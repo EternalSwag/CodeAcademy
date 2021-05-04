@@ -51,15 +51,14 @@ public class UserConsoleInput {
         return null;
     }
 
-    public LocalDateTime enterDateTime(String message) {
-        System.out.println(message);
+    public LocalDateTime enterDateTime() {
         System.out.println("Enter date and time (format - yyyy-MM-dd HH:mm)");
         System.out.println("Enter \"Now\" to use current date and time");
 
         LocalDateTime resultDateTime = LocalDateTime.now();
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
-        do {
+        while(true) {
             String dateTimeInput = sc.nextLine();
             if (dateTimeInput.toLowerCase(Locale.ROOT).equals("now")) return resultDateTime;
             try {
@@ -75,12 +74,12 @@ public class UserConsoleInput {
             } catch (DateTimeParseException e) {
                 System.out.println("Wrong date time input. Format is yyyy-MM-dd HH:mm");
             }
-        } while (true);
+        }
     }
 
-    public PaymentMethod enterPaymentMethod(String message)
+    public PaymentMethod enterPaymentMethod()
     {
-        System.out.println(message);
+        System.out.println("Enter payment method: ");
         System.out.println("1. Bank transaction");
         System.out.println("2. Cash");
 
@@ -104,8 +103,8 @@ public class UserConsoleInput {
     }
 
 
-    public TransactionCategory enterCategory(String message) {
-        System.out.print(message);
+    public TransactionCategory enterCategory() {
+        System.out.print("Enter category: ");
         System.out.println("1. ASSET");
         System.out.println("2. LIABILITY");
         System.out.println("3. EQUITY");
