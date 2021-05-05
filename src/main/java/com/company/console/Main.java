@@ -13,11 +13,12 @@ public class Main {
     private static Scanner sc = new Scanner(System.in);
 
     public static void main(String[] args) {
-        Menu m = new Menu(prepareBudget());
+        Menu m = new Menu(prepareSampleBudget());
         m.entryMenu();
     }
 
-    private static Budget prepareBudget()
+
+    private static Budget prepareSampleBudget()
     {
         Budget sampleBudget = new Budget();
         sampleBudget.addIncome(LocalDateTime.now(), new BigDecimal("2500"), TransactionCategory.ASSET, PaymentMethod.BANK_TRANSACTION, "Salary");
