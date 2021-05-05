@@ -1,3 +1,2 @@
 # CodeAcademy
-dddd
-this is just a test
+![alt text](https://github.com/EternalSwag/CodeAcademy/blob/accounting/accounting picture.jpg?raw=true)
