@@ -34,7 +34,9 @@ public class UserConsoleInput {
 
     public String enterString(String message) {
         System.out.print(message);
-        return sc.nextLine();
+        sc.nextLine();
+        String result = sc.nextLine();
+        return result;
     }
 
     public BigDecimal enterBigDecimal(String message) {
@@ -57,7 +59,7 @@ public class UserConsoleInput {
 
         LocalDateTime resultDateTime = LocalDateTime.now();
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-
+        sc.nextLine();
         while(true) {
             String dateTimeInput = sc.nextLine();
             if (dateTimeInput.toLowerCase(Locale.ROOT).equals("now")) return resultDateTime;

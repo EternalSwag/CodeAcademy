@@ -14,6 +14,8 @@ public class IncomeRecord extends RecordAbstract {
         super(dateTime, sum, transactionCategory, paymentMethod, additionalInfo);
     }
 
+
+
     @Override
     public String toString() {
         return "Income: " + super.toString();

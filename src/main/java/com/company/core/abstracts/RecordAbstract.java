@@ -26,9 +26,25 @@ public abstract class RecordAbstract {
         this.additionalInfo = additionalInfo;
     }
 
+    public BigDecimal getSum() {
+        return sum;
+    }
+
+    public TransactionCategory getTransactionCategory() {
+        return transactionCategory;
+    }
+
+    public PaymentMethod getPaymentMethod() {
+        return paymentMethod;
+    }
+
+    public String getAdditionalInfo() {
+        return additionalInfo;
+    }
+
+
     @Override
     public String toString() {
-
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         String formatDateTime = dateTime.format(formatter);
 

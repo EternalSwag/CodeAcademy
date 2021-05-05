@@ -21,7 +21,6 @@ public class Menu {
     public void entryMenu() {
         sendGreeting();
         mainMenu();
-        sc.close();
     }
 
     private void mainMenu() {
@@ -52,20 +51,33 @@ public class Menu {
                     selectedChoice = true;
                     listAllExpenses();
                     break;
+                case 0:
+                    exit();
+                    break;
                 default:
                     System.out.println("Wrong input, select right menu option");
             }
         }
     }
 
+    private void exit() {
+        System.out.println("Thanks for using our service");
+        sc.close();
+        System.exit(0);
+    }
+
     private void listAllExpenses() {
         System.out.println("Total expenses");
         System.out.println(budget.listAllExpenses());
+        pressEnterKeyToContinue();
+        mainMenu();
     }
 
     private void listAllIncome() {
         System.out.println("Total income");
         System.out.println(budget.listAllIncome());
+        pressEnterKeyToContinue();
+        mainMenu();
     }
 
     private void addExpenseRecord() {
@@ -76,6 +88,7 @@ public class Menu {
         PaymentMethod providedPaymentMethod = userInput.enterPaymentMethod();
         String providedInfo = userInput.enterString("Enter additional info: ");
         budget.addExpenditure(providedDate, providedSum, providedCategory, providedPaymentMethod, providedInfo);
+        mainMenu();
     }
 
     private void addIncomeRecord() {
@@ -86,6 +99,7 @@ public class Menu {
         PaymentMethod providedPaymentMethod = userInput.enterPaymentMethod();
         String providedInfo = userInput.enterString("Enter additional info: ");
         budget.addIncome(providedDate, providedSum, providedCategory, providedPaymentMethod, providedInfo);
+        mainMenu();
     }
 
 
@@ -93,12 +107,14 @@ public class Menu {
     private void sendMainMenuMessage() {
         printSeparator('*', 30);
         System.out.println("Main Menu:");
+        System.out.println(budget.info());
+        printSeparator('*', 30);
         System.out.println("Select option");
         System.out.println("1. Add income");
         System.out.println("2. Add expense");
         System.out.println("3. List all income");
         System.out.println("4. List all expenses");
-
+        System.out.println("0. Exit");
     }
 
     private void sendGreeting() {
@@ -113,5 +129,16 @@ public class Menu {
         System.out.println("");
     }
 
+
+    private void pressEnterKeyToContinue()
+    {
+        System.out.println("Press Enter key to continue...");
+        try
+        {
+            System.in.read();
+        }
+        catch(Exception e)
+        {}
+    }
 
 }
