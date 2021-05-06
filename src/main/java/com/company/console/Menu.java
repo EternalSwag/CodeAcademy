@@ -5,7 +5,6 @@ import com.company.core.enums.PaymentMethod;
 import com.company.core.enums.TransactionCategory;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Scanner;
 
@@ -30,25 +29,18 @@ public class Menu {
 
     private void processMainMenuSelection() {
 
-        boolean selectedChoice = false;
-
-        while (!selectedChoice) {
           int mainSelection = userInput.enterInt("Enter your choice: ");
             switch (mainSelection) {
                 case 1:
-                    selectedChoice = true;
                     addIncomeRecord();
                     break;
                 case 2:
-                    selectedChoice = true;
                     addExpenseRecord();
                     break;
                 case 3:
-                    selectedChoice = true;
                     listAllIncome();
                     break;
                 case 4:
-                    selectedChoice = true;
                     listAllExpenses();
                     break;
                 case 0:
@@ -56,9 +48,10 @@ public class Menu {
                     break;
                 default:
                     System.out.println("Wrong input, select right menu option");
+                    processMainMenuSelection();
             }
         }
-    }
+
 
     private void exit() {
         System.out.println("Thanks for using our service");
