@@ -10,7 +10,9 @@ import java.util.UUID;
 
 public abstract class RecordAbstract {
 
-    private UUID id;
+    private UUID globalId;
+    private int localId;
+
     private LocalDateTime dateTime;
     private BigDecimal sum;
     private TransactionCategory transactionCategory;
@@ -23,6 +25,7 @@ public abstract class RecordAbstract {
         this.transactionCategory = transactionCategory;
         this.paymentMethod = paymentMethod;
         this.additionalInfo = additionalInfo;
+        this.globalId = UUID.randomUUID();
     }
 
     public BigDecimal getSum() {
@@ -41,18 +44,27 @@ public abstract class RecordAbstract {
         return additionalInfo;
     }
 
+    public int getLocalId() {
+        return localId;
+    }
+
+    public void setLocalId(int localId) {
+        this.localId = localId;
+    }
+
 
     @Override
     public String toString() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         String formatDateTime = dateTime.format(formatter);
 
-        return
+        return "id=" + localId + " " +
                 formatDateTime +
-                        ", sum=" + sum +
-                        ", transactionCategory=" + transactionCategory +
-                        ", paymentMethod=" + paymentMethod +
-                        ", " + additionalInfo;
+                ", sum=" + sum +
+                ", transactionCategory=" + transactionCategory +
+                ", paymentMethod=" + paymentMethod +
+                ", " + additionalInfo;
 
     }
+
 }

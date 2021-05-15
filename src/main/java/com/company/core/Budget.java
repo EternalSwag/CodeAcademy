@@ -14,12 +14,9 @@ import java.util.List;
 public class Budget {
 
     private BigDecimal balance;
-
     private List<IncomeRecord> incomeList;
     private List<ExpenditureRecord> expensesList;
-
-    private int incomeRecordsTotal = 0;
-    private int expenseRecordsTotal = 0;
+    private int localRecordCount = 0;
 
     public Budget() {
         balance = new BigDecimal("0");
@@ -28,11 +25,13 @@ public class Budget {
     }
 
     public void addIncome(LocalDateTime date, BigDecimal sum, TransactionCategory category, PaymentMethod paymentMethod, String info) {
-        incomeList.add(new IncomeRecord(date, sum, category, paymentMethod, info));
+        incomeList.add(new IncomeRecord(localRecordCount, date, sum, category, paymentMethod, info));
+        localRecordCount ++;
     }
 
     public void addExpenditure(LocalDateTime date, BigDecimal sum, TransactionCategory category, PaymentMethod paymentMethod, String info) {
-        expensesList.add(new ExpenditureRecord(date, sum, category, paymentMethod, info));
+        expensesList.add(new ExpenditureRecord(localRecordCount, date, sum, category, paymentMethod, info));
+        localRecordCount ++;
     }
 
 

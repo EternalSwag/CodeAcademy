@@ -17,7 +17,6 @@ public class Main {
         m.entryMenu();
     }
 
-
     private static Budget prepareSampleBudget()
     {
         Budget sampleBudget = new Budget();

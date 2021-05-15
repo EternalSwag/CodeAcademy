@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 
 public class IncomeRecord extends RecordAbstract {
 
-    public IncomeRecord(LocalDateTime dateTime, BigDecimal sum, TransactionCategory transactionCategory, PaymentMethod paymentMethod, String additionalInfo) {
+    public IncomeRecord(int localId, LocalDateTime dateTime, BigDecimal sum, TransactionCategory transactionCategory, PaymentMethod paymentMethod, String additionalInfo) {
         super(dateTime, sum, transactionCategory, paymentMethod, additionalInfo);
     }
 
