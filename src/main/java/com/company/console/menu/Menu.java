@@ -1,9 +1,9 @@
 package com.company.console.menu;
 
 import com.company.core.Budget;
-import com.company.core.abstracts.RecordAbstract;
 import com.company.core.enums.PaymentMethod;
 import com.company.core.enums.TransactionCategory;
+import com.company.core.enums.TransactionType;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -39,16 +39,19 @@ public class Menu {
         int mainSelection = userInput.enterInt("Enter your choice: ");
         switch (mainSelection) {
             case 1:
-                addIncomeRecord();
+                addIncomeRecordSubmenu();
                 break;
             case 2:
-                addExpenseRecord();
+                addExpenseRecordSubmenu();
                 break;
             case 3:
-                listAllIncome();
+                listAllIncomeSubmenu();
                 break;
             case 4:
-                listAllExpenses();
+                listAllExpensesSubmenu();
+                break;
+            case 5:
+                deleteRecordSubmenu();
                 break;
             case 0:
                 exit();
@@ -59,6 +62,56 @@ public class Menu {
         }
     }
 
+    private void deleteRecordSubmenu() {
+
+        deleteSubmenuMessage();
+        int choice = userInput.enterInt("Enter your choice: ");
+        switch (choice) {
+            case 1:
+                deleteMenu(TransactionType.INCOME);
+                break;
+            case 2:
+                deleteMenu(TransactionType.EXPENDITURE);
+                break;
+            case 0:
+                mainMenu();
+                break;
+            default:
+                System.out.println("Wrong input, select right menu option");
+                deleteRecordSubmenu();
+        }
+    }
+
+    private void deleteMenu(TransactionType transactionType) {
+        //display all records first
+        switch (transactionType) {
+            case INCOME:
+                System.out.println(budget.fetchIncomeList(true));
+                printSeparator('-', 30);
+                break;
+            case EXPENDITURE:
+                System.out.println(budget.fetchExpenseList(true));
+                printSeparator('-', 30);
+                break;
+            default:
+                deleteRecordSubmenu();
+        }
+        int choice = userInput.enterInt("enter id of record you want to delete: ");
+        boolean deleteOperationResult = budget.deleteRecord(transactionType, choice);
+
+        if (deleteOperationResult) {
+            System.out.println("Operation successful");
+        } else {
+            System.out.println("This record doesn't exist");
+        }
+        deleteRecordSubmenu();
+    }
+
+    private void deleteSubmenuMessage() {
+        System.out.println("1. Delete income record");
+        System.out.println("2. Delete expense record");
+        System.out.println("0. Exit submenu");
+    }
 
     private void exit() {
         System.out.println("Thanks for using our service");
@@ -66,21 +119,21 @@ public class Menu {
         System.exit(0);
     }
 
-    private void listAllExpenses() {
+    private void listAllExpensesSubmenu() {
         System.out.println("Total expenses");
         System.out.println(arrayToString(budget.fetchExpenseList(true)));
         pressEnterKeyToContinue();
         mainMenu();
     }
 
-    private void listAllIncome() {
+    private void listAllIncomeSubmenu() {
         System.out.println("Total income");
-        System.out.println(arrayToString(budget.fetchExpenseList(true)));
+        System.out.println(arrayToString(budget.fetchIncomeList(true)));
         pressEnterKeyToContinue();
         mainMenu();
     }
 
-    private void addExpenseRecord() {
+    private void addExpenseRecordSubmenu() {
         System.out.println("Add expense record");
         LocalDateTime providedDate = userInput.enterDateTime();
         BigDecimal providedSum = userInput.enterBigDecimal("Enter sum: ");
@@ -91,7 +144,7 @@ public class Menu {
         mainMenu();
     }
 
-    private void addIncomeRecord() {
+    private void addIncomeRecordSubmenu() {
         System.out.println("Add income record");
         LocalDateTime providedDate = userInput.enterDateTime();
         BigDecimal providedSum = userInput.enterBigDecimal("Enter sum: ");
@@ -113,6 +166,7 @@ public class Menu {
         System.out.println("2. Add expense");
         System.out.println("3. List all income");
         System.out.println("4. List all expenses");
+        System.out.println("5. Delete record");
         System.out.println("0. Exit");
     }
 

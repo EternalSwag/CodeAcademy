@@ -3,6 +3,7 @@ package com.company.core;
 import com.company.core.abstracts.RecordAbstract;
 import com.company.core.enums.PaymentMethod;
 import com.company.core.enums.TransactionCategory;
+import com.company.core.enums.TransactionType;
 import com.company.core.transactions.ExpenditureRecord;
 import com.company.core.transactions.IncomeRecord;
 
@@ -49,7 +50,7 @@ public class Budget {
         ArrayList<String> result = new ArrayList<>();
         for (int i = 0; i < recordList.size(); i++) {
             int index = startsFromOne ? i + 1 : i;
-            result.add((index) + ". " + recordList.get(i).toString() + "\n");
+            result.add((index) + ". " + recordList.get(i).toString());
         }
         return result;
     }
@@ -136,12 +137,34 @@ public class Budget {
     }
 
     /**
+     * public method to perform delete record by id
+     *
+     * @param transactionType - expense, income, etc
+     * @param id              - id to delete
+     * @return true if succeeds, false ir fails
+     */
+    public boolean deleteRecord(TransactionType transactionType, int id) {
+        boolean result = false;
+        switch (transactionType) {
+            case INCOME:
+                result = deleteRecord((List<RecordAbstract>) (List<? extends RecordAbstract>) incomeList, id);
+                break;
+            case EXPENDITURE:
+                result = deleteRecord((List<RecordAbstract>) (List<? extends RecordAbstract>) expensesList, id);
+                break;
+            default:
+                return false;
+        }
+        return result;
+    }
+
+    /**
      * returns record by provided local id (specified in income or expense list)
      *
      * @param id
      * @return record matching conditions, or null if found not any
      */
-    public RecordAbstract getRecordByLocalIdSpecified(List<RecordAbstract> particularList, int id) {
+    private RecordAbstract getRecordByLocalIdSpecified(List<RecordAbstract> particularList, int id) {
         RecordAbstract matchingObject = particularList.stream().
                 filter(p -> p.getLocalId() == id).
                 findAny().orElse(null);
@@ -155,12 +178,13 @@ public class Budget {
      * @param localId      - id of record
      * @return true if deletion successful, false if no such record found
      */
-    public boolean deleteRecord(List<RecordAbstract> listProvided, int localId) {
+    private boolean deleteRecord(List<RecordAbstract> listProvided, int localId) {
         RecordAbstract entryToDelete = getRecordByLocalIdSpecified(listProvided, localId);
 
         if (entryToDelete == null) {
             return false;
         }
         listProvided.remove(entryToDelete);
+        return true;
     }
 }
