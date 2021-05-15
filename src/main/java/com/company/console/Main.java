@@ -1,6 +1,7 @@
 package com.company.console;
 import com.company.console.menu.Menu;
 import com.company.core.Budget;
+import com.company.core.abstracts.RecordAbstract;
 import com.company.core.enums.PaymentMethod;
 import com.company.core.enums.TransactionCategory;
 
@@ -24,6 +25,8 @@ public class Main {
         sampleBudget.addIncome(LocalDateTime.now(), new BigDecimal("2800"), TransactionCategory.ASSET, PaymentMethod.BANK_TRANSACTION, "Salary");
         sampleBudget.addIncome(LocalDateTime.now(), new BigDecimal("2200"), TransactionCategory.ASSET, PaymentMethod.BANK_TRANSACTION, "Salary");
         sampleBudget.addExpenditure(LocalDateTime.now(), new BigDecimal("50"), TransactionCategory.EXPENSES, PaymentMethod.CASH, "bottle of whiskey");
+
+
         return sampleBudget;
     }
 

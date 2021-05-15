@@ -7,9 +7,12 @@ import com.company.core.transactions.ExpenditureRecord;
 import com.company.core.transactions.IncomeRecord;
 
 import java.math.BigDecimal;
+import java.sql.ResultSet;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 public class Budget {
 
@@ -26,12 +29,12 @@ public class Budget {
 
     public void addIncome(LocalDateTime date, BigDecimal sum, TransactionCategory category, PaymentMethod paymentMethod, String info) {
         incomeList.add(new IncomeRecord(localRecordCount, date, sum, category, paymentMethod, info));
-        localRecordCount ++;
+        localRecordCount++;
     }
 
     public void addExpenditure(LocalDateTime date, BigDecimal sum, TransactionCategory category, PaymentMethod paymentMethod, String info) {
         expensesList.add(new ExpenditureRecord(localRecordCount, date, sum, category, paymentMethod, info));
-        localRecordCount ++;
+        localRecordCount++;
     }
 
 
@@ -111,5 +114,53 @@ public class Budget {
             result = result.add(record.getSum());
         }
         return result;
+    }
+
+    /**
+     * returns record by provided local id (any, income or expense)
+     *
+     * @param id
+     * @return record matching id, or null if found not any
+     */
+    public RecordAbstract getRecordByLocalId(int id) {
+        RecordAbstract matchingObject = incomeList.stream().
+                filter(p -> p.getLocalId() == id).
+                findAny().orElse(null);
+
+        if (matchingObject == null) {
+            matchingObject = expensesList.stream().
+                    filter(p -> p.getLocalId() == id).
+                    findAny().orElse(null);
+        }
+        return matchingObject;
+    }
+
+    /**
+     * returns record by provided local id (specified in income or expense list)
+     *
+     * @param id
+     * @return record matching conditions, or null if found not any
+     */
+    public RecordAbstract getRecordByLocalIdSpecified(List<RecordAbstract> particularList, int id) {
+        RecordAbstract matchingObject = particularList.stream().
+                filter(p -> p.getLocalId() == id).
+                findAny().orElse(null);
+        return matchingObject;
+    }
+
+    /**
+     * Deletes record by provided local id
+     *
+     * @param listProvided - income, expense list, etc
+     * @param localId      - id of record
+     * @return true if deletion successful, false if no such record found
+     */
+    public boolean deleteRecord(List<RecordAbstract> listProvided, int localId) {
+        RecordAbstract entryToDelete = getRecordByLocalIdSpecified(listProvided, localId);
+
+        if (entryToDelete == null) {
+            return false;
+        }
+        listProvided.remove(entryToDelete);
     }
 }

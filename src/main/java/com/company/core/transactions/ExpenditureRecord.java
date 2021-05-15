@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 public class ExpenditureRecord extends RecordAbstract {
 
     public ExpenditureRecord(int localId, LocalDateTime dateTime, BigDecimal sum, TransactionCategory transactionCategory, PaymentMethod paymentMethod, String additionalInfo) {
-        super(dateTime, sum, transactionCategory, paymentMethod, additionalInfo);
+        super(localId, dateTime, sum, transactionCategory, paymentMethod,TransactionType.EXPENDITURE,  additionalInfo);
     }
 
     @Override

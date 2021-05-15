@@ -2,6 +2,7 @@ package com.company.core.abstracts;
 
 import com.company.core.enums.PaymentMethod;
 import com.company.core.enums.TransactionCategory;
+import com.company.core.enums.TransactionType;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -17,15 +18,19 @@ public abstract class RecordAbstract {
     private BigDecimal sum;
     private TransactionCategory transactionCategory;
     private PaymentMethod paymentMethod;
+    private TransactionType transactionType;
     private String additionalInfo;
 
-    public RecordAbstract(LocalDateTime dateTime, BigDecimal sum, TransactionCategory transactionCategory, PaymentMethod paymentMethod, String additionalInfo) {
+    public RecordAbstract(int localId, LocalDateTime dateTime, BigDecimal sum, TransactionCategory transactionCategory, PaymentMethod paymentMethod, TransactionType transactionType, String additionalInfo) {
+        this.localId = localId;
         this.dateTime = dateTime;
         this.sum = sum;
         this.transactionCategory = transactionCategory;
         this.paymentMethod = paymentMethod;
+        this.transactionType = transactionType;
         this.additionalInfo = additionalInfo;
         this.globalId = UUID.randomUUID();
+
     }
 
     public BigDecimal getSum() {
@@ -52,6 +57,9 @@ public abstract class RecordAbstract {
         this.localId = localId;
     }
 
+    public UUID getGlobalId() {
+        return globalId;
+    }
 
     @Override
     public String toString() {
