@@ -16,6 +16,11 @@ public class Menu {
     private UserConsoleInput userInput = new UserConsoleInput(sc);
 
     public Menu(Budget budget) {
+
+        if (budget == null) {
+            System.exit(0);
+        }
+
         this.budget = budget;
     }
 
