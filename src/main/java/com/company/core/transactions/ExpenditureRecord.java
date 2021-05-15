@@ -10,7 +10,12 @@ import java.time.LocalDateTime;
 
 public class ExpenditureRecord extends RecordAbstract {
 
-    public ExpenditureRecord(int localId, LocalDateTime dateTime, BigDecimal sum, TransactionCategory transactionCategory, PaymentMethod paymentMethod, String additionalInfo) {
+    public ExpenditureRecord(int localId,
+                             LocalDateTime dateTime,
+                             BigDecimal sum,
+                             TransactionCategory transactionCategory,
+                             PaymentMethod paymentMethod,
+                             String additionalInfo) {
         super(localId, dateTime, sum, transactionCategory, paymentMethod,TransactionType.EXPENDITURE,  additionalInfo);
     }
 

@@ -8,12 +8,9 @@ import com.company.core.transactions.ExpenditureRecord;
 import com.company.core.transactions.IncomeRecord;
 
 import java.math.BigDecimal;
-import java.sql.ResultSet;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Stream;
 
 public class Budget {
 

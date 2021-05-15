@@ -10,11 +10,14 @@ import java.time.LocalDateTime;
 
 public class IncomeRecord extends RecordAbstract {
 
-    public IncomeRecord(int localId, LocalDateTime dateTime, BigDecimal sum, TransactionCategory transactionCategory, PaymentMethod paymentMethod, String additionalInfo) {
-        super(localId, dateTime, sum, transactionCategory, paymentMethod,TransactionType.INCOME, additionalInfo);
+    public IncomeRecord(int localId,
+                        LocalDateTime dateTime,
+                        BigDecimal sum,
+                        TransactionCategory transactionCategory,
+                        PaymentMethod paymentMethod,
+                        String additionalInfo) {
+        super(localId, dateTime, sum, transactionCategory, paymentMethod, TransactionType.INCOME, additionalInfo);
     }
-
-
 
     @Override
     public String toString() {

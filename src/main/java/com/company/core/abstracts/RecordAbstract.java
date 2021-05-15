@@ -5,6 +5,7 @@ import com.company.core.enums.TransactionCategory;
 import com.company.core.enums.TransactionType;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
@@ -61,14 +62,27 @@ public abstract class RecordAbstract {
         return globalId;
     }
 
+
+    /**
+     * formats decimal to have 2 decimal numbers
+     * @param value
+     * @return
+     */
+    private BigDecimal formatBigDecimal(BigDecimal value) {
+        DecimalFormat df = new DecimalFormat("####.00");
+        return new BigDecimal(df.format(value));
+    }
+
+
     @Override
     public String toString() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         String formatDateTime = dateTime.format(formatter);
 
+
         return "id=" + localId + " " +
                 formatDateTime +
-                ", sum=" + sum +
+                ", sum=" + formatBigDecimal(sum) +
                 ", transactionCategory=" + transactionCategory +
                 ", paymentMethod=" + paymentMethod +
                 ", " + additionalInfo;
