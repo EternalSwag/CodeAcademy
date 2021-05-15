@@ -1,5 +1,5 @@
 package com.company.console;
-import com.company.console.Menu;
+import com.company.console.menu.Menu;
 import com.company.core.Budget;
 import com.company.core.enums.PaymentMethod;
 import com.company.core.enums.TransactionCategory;

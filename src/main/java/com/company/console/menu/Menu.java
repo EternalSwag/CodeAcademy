@@ -1,4 +1,4 @@
-package com.company.console;
+package com.company.console.menu;
 
 import com.company.core.Budget;
 import com.company.core.enums.PaymentMethod;

@@ -1,4 +1,4 @@
-package com.company.console;
+package com.company.console.menu;
 
 import com.company.core.enums.PaymentMethod;
 import com.company.core.enums.TransactionCategory;

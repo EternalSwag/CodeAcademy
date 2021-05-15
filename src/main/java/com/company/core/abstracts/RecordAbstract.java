@@ -2,7 +2,6 @@ package com.company.core.abstracts;
 
 import com.company.core.enums.PaymentMethod;
 import com.company.core.enums.TransactionCategory;
-import com.company.core.enums.TransactionType;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
