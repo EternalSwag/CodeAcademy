@@ -1,11 +1,13 @@
 package com.company.console.menu;
 
 import com.company.core.Budget;
+import com.company.core.abstracts.RecordAbstract;
 import com.company.core.enums.PaymentMethod;
 import com.company.core.enums.TransactionCategory;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Scanner;
 
 public class Menu {
@@ -29,28 +31,28 @@ public class Menu {
 
     private void processMainMenuSelection() {
 
-          int mainSelection = userInput.enterInt("Enter your choice: ");
-            switch (mainSelection) {
-                case 1:
-                    addIncomeRecord();
-                    break;
-                case 2:
-                    addExpenseRecord();
-                    break;
-                case 3:
-                    listAllIncome();
-                    break;
-                case 4:
-                    listAllExpenses();
-                    break;
-                case 0:
-                    exit();
-                    break;
-                default:
-                    System.out.println("Wrong input, select right menu option");
-                    processMainMenuSelection();
-            }
+        int mainSelection = userInput.enterInt("Enter your choice: ");
+        switch (mainSelection) {
+            case 1:
+                addIncomeRecord();
+                break;
+            case 2:
+                addExpenseRecord();
+                break;
+            case 3:
+                listAllIncome();
+                break;
+            case 4:
+                listAllExpenses();
+                break;
+            case 0:
+                exit();
+                break;
+            default:
+                System.out.println("Wrong input, select right menu option");
+                processMainMenuSelection();
         }
+    }
 
 
     private void exit() {
@@ -61,14 +63,14 @@ public class Menu {
 
     private void listAllExpenses() {
         System.out.println("Total expenses");
-        System.out.println(budget.listAllExpenses());
+        System.out.println(arrayToString(budget.fetchExpenseList(true)));
         pressEnterKeyToContinue();
         mainMenu();
     }
 
     private void listAllIncome() {
         System.out.println("Total income");
-        System.out.println(budget.listAllIncome());
+        System.out.println(arrayToString(budget.fetchExpenseList(true)));
         pressEnterKeyToContinue();
         mainMenu();
     }
@@ -96,7 +98,6 @@ public class Menu {
     }
 
 
-
     private void sendMainMenuMessage() {
         printSeparator('*', 30);
         System.out.println("Main Menu:");
@@ -122,16 +123,37 @@ public class Menu {
         System.out.println("");
     }
 
+    /**
+     * it takes operation list, and adds index starting from 1
+     *
+     * @param operationsList
+     * @return formatted String list
+     */
+    private String formatListOfRecords(List<String> operationsList) {
+        StringBuilder result = new StringBuilder();
 
-    private void pressEnterKeyToContinue()
-    {
-        System.out.println("Press Enter key to continue...");
-        try
-        {
-            System.in.read();
+        for (int i = 0; i < operationsList.size(); i++) {
+            String formattedLine = String.format("%d. %s", (i + 1), operationsList.get(i));
         }
-        catch(Exception e)
-        {}
+
+        return result.toString();
+    }
+
+
+    private void pressEnterKeyToContinue() {
+        System.out.println("Press Enter key to continue...");
+        try {
+            System.in.read();
+        } catch (Exception e) {
+        }
+    }
+
+    private String arrayToString(List<String> arrayProvided) {
+        StringBuilder sb = new StringBuilder();
+        for (String s : arrayProvided) {
+            sb.append(s + "\n");
+        }
+        return sb.toString();
     }
 
 }

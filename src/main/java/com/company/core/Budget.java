@@ -15,56 +15,98 @@ public class Budget {
 
     private BigDecimal balance;
 
-    private List<IncomeRecord> income;
-    private List<ExpenditureRecord> expenses;
+    private List<IncomeRecord> incomeList;
+    private List<ExpenditureRecord> expensesList;
 
     private int incomeRecordsTotal = 0;
     private int expenseRecordsTotal = 0;
 
     public Budget() {
         balance = new BigDecimal("0");
-        income = new ArrayList<>();
-        expenses = new ArrayList<>();
+        incomeList = new ArrayList<>();
+        expensesList = new ArrayList<>();
     }
 
     public void addIncome(LocalDateTime date, BigDecimal sum, TransactionCategory category, PaymentMethod paymentMethod, String info) {
-        income.add(new IncomeRecord(date, sum, category, paymentMethod, info));
-        incomeRecordsTotal++;
+        incomeList.add(new IncomeRecord(date, sum, category, paymentMethod, info));
     }
 
     public void addExpenditure(LocalDateTime date, BigDecimal sum, TransactionCategory category, PaymentMethod paymentMethod, String info) {
-        expenses.add(new ExpenditureRecord(date, sum, category, paymentMethod, info));
-        expenseRecordsTotal++;
+        expensesList.add(new ExpenditureRecord(date, sum, category, paymentMethod, info));
     }
 
-    public String listAllIncome() {
-        StringBuilder result = new StringBuilder();
-        for (int i = 0; i < incomeRecordsTotal; i++) {
-            result.append((i) + ". " + income.get(i).toString() + "\n");
+
+    /**
+     * provides list of all entries in operations list
+     *
+     * @param recordList    record list
+     * @param startsFromOne flag, indicating should outputs first index starts from 0 (false) or 1 (true)
+     * @return list of strings
+     */
+    public ArrayList<String> getOperationListToStringList(List<RecordAbstract> recordList, boolean startsFromOne) {
+        ArrayList<String> result = new ArrayList<>();
+        for (int i = 0; i < recordList.size(); i++) {
+            int index = startsFromOne ? i + 1 : i;
+            result.add((index) + ". " + recordList.get(i).toString() + "\n");
         }
-        return result.toString();
-    }
-
-    public String listAllExpenses() {
-        StringBuilder result = new StringBuilder();
-        for (int i = 0; i < expenseRecordsTotal; i++) {
-            result.append((i) + ". " + expenses.get(i).toString() + "\n");
-        }
-        return result.toString();
-    }
-
-    public String info() {
-
-        BigDecimal incomeTotal = totalBalance((List<RecordAbstract>) (List<? extends RecordAbstract>) income);
-        BigDecimal expenseTotal = totalBalance((List<RecordAbstract>) (List<? extends RecordAbstract>) expenses);
-
-        BigDecimal balance = incomeTotal.subtract(expenseTotal);
-
-        String result = String.format("Balance = " + balance + "\n" + "Total income = " + incomeTotal.toString() + "\n" + "Total expenses = " + expenseTotal.toString());
         return result;
     }
 
-    private BigDecimal totalBalance(List<RecordAbstract> recordList) {
+    /**
+     * @param recordList    record list
+     * @param startsFromOne flag, indicating should outputs first index starts from 0 (false) or 1 (true)
+     * @return string
+     */
+    public String getOperationListToString(List<RecordAbstract> recordList, boolean startsFromOne) {
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < recordList.size(); i++) {
+            int index = startsFromOne ? i + 1 : i;
+            result.append((index) + ". " + recordList.get(i).toString() + "\n");
+        }
+        return result.toString();
+    }
+
+    /**
+     * provides String result of income
+     *
+     * @param startsFromOne
+     * @return
+     */
+    public List<String> fetchIncomeList(boolean startsFromOne) {
+        ArrayList<String> incomeOperations = getOperationListToStringList((List<RecordAbstract>) (List<? extends RecordAbstract>) incomeList, startsFromOne);
+        return incomeOperations;
+    }
+
+    public List<String> fetchExpenseList(boolean startsFromOne) {
+        ArrayList<String> expenseOperations = getOperationListToStringList((List<RecordAbstract>) (List<? extends RecordAbstract>) expensesList, startsFromOne);
+        return expenseOperations;
+    }
+
+    /**
+     * updates balance and provides string of basic information of budget
+     */
+    public String info() {
+        updateBalance();
+        String result = String.format("Balance = " + balance + "\n" + "Total income = " + totalIncome().toString() + "\n" + "Total expenses = " + totalExpenses().toString());
+        return result;
+    }
+
+    /**
+     * recalculates balance
+     */
+    private void updateBalance() {
+        this.balance = totalIncome().subtract(totalExpenses());
+    }
+
+    private BigDecimal totalIncome() {
+        return totalSumOfRecords((List<RecordAbstract>) (List<? extends RecordAbstract>) incomeList);
+    }
+
+    private BigDecimal totalExpenses() {
+        return totalSumOfRecords((List<RecordAbstract>) (List<? extends RecordAbstract>) expensesList);
+    }
+
+    private BigDecimal totalSumOfRecords(List<RecordAbstract> recordList) {
         BigDecimal result = new BigDecimal("0");
         for (RecordAbstract record : recordList) {
             result = result.add(record.getSum());
