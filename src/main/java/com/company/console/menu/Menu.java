@@ -5,7 +5,6 @@ import com.company.core.enums.PaymentMethod;
 import com.company.core.enums.TransactionCategory;
 import com.company.core.enums.TransactionType;
 
-import java.io.Console;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -87,11 +86,11 @@ public class Menu {
         //display all records first
         switch (transactionType) {
             case INCOME:
-                System.out.println(arrayToString(budget.fetchIncomeList(true)));
+                ConsolePrinter.printMessageLine(arrayToString(budget.fetchIncomeList(true)));
                 ConsolePrinter.printSeparator('-', 30);
                 break;
             case EXPENDITURE:
-                System.out.println(arrayToString(budget.fetchExpenseList(true)));
+                ConsolePrinter.printMessageLine(arrayToString(budget.fetchExpenseList(true)));
                 ConsolePrinter.printSeparator('-', 30);
                 break;
             default:
@@ -101,9 +100,9 @@ public class Menu {
         boolean deleteOperationResult = budget.deleteRecord(transactionType, choice);
 
         if (deleteOperationResult) {
-            System.out.println(Messages.OPERATION_SUCCESFUL);
+            ConsolePrinter.printMessageLine(Messages.OPERATION_SUCCESFUL);
         } else {
-            System.out.println(Messages.RECORD_DOESNT_EXIST);
+            ConsolePrinter.printMessageLine(Messages.RECORD_DOESNT_EXIST);
         }
         deleteRecordSubmenu();
     }
@@ -119,32 +118,32 @@ public class Menu {
     }
 
     private void listAllExpensesSubmenu() {
-        System.out.println(Messages.TOTAL_EXPENSES);
-        System.out.println(arrayToString(budget.fetchExpenseList(true)));
+        ConsolePrinter.printMessageLine(Messages.TOTAL_EXPENSES);
+        ConsolePrinter.printMessageLine(arrayToString(budget.fetchExpenseList(true)));
         pressEnterKeyToContinue();
         mainMenu();
     }
 
     private void listAllIncomeSubmenu() {
-        System.out.println(Messages.TOTAL_INCOME);
-        System.out.println(arrayToString(budget.fetchIncomeList(true)));
+        ConsolePrinter.printMessageLine(Messages.TOTAL_INCOME);
+        ConsolePrinter.printMessageLine(arrayToString(budget.fetchIncomeList(true)));
         pressEnterKeyToContinue();
         mainMenu();
     }
 
     private void addExpenseRecordSubmenu() {
-        System.out.println(Messages.ADD_EXPENSE_RECORD);
+        ConsolePrinter.printMessageLine(Messages.ADD_EXPENSE_RECORD);
         LocalDateTime providedDate = userInput.enterDateTime();
-        BigDecimal providedSum = userInput.enterBigDecimal("Enter sum: ");
+        BigDecimal providedSum = userInput.enterBigDecimal(Messages.ENTER_SUM);
         TransactionCategory providedCategory = userInput.enterCategory();
         PaymentMethod providedPaymentMethod = userInput.enterPaymentMethod();
-        String providedInfo = userInput.enterString("Enter additional info: ");
+        String providedInfo = userInput.enterString(Messages.ENTER_ADDITIONAL_INFO);
         budget.addExpenditure(providedDate, providedSum, providedCategory, providedPaymentMethod, providedInfo);
         mainMenu();
     }
 
     private void addIncomeRecordSubmenu() {
-        System.out.println(Messages.ADD_INCOME_RECORD);
+        ConsolePrinter.printMessageLine(Messages.ADD_INCOME_RECORD);
         LocalDateTime providedDate = userInput.enterDateTime();
         BigDecimal providedSum = userInput.enterBigDecimal(Messages.ENTER_SUM);
         TransactionCategory providedCategory = userInput.enterCategory();
@@ -157,21 +156,15 @@ public class Menu {
 
     private void sendMainMenuMessage() {
         ConsolePrinter.printSeparator('*', 30);
-        System.out.println("Main Menu:");
-        System.out.println(budget.info());
+        ConsolePrinter.printMessageLine(Messages.MAIN_MENU);
+        ConsolePrinter.printMessageLine(budget.info());
         ConsolePrinter.printSeparator('*', 30);
-        System.out.println("Select option");
-        System.out.println("1. Add income");
-        System.out.println("2. Add expense");
-        System.out.println("3. List all income");
-        System.out.println("4. List all expenses");
-        System.out.println("5. Delete record");
-        System.out.println("0. Exit");
+        ConsolePrinter.printMessage(Messages.MAIN_MENU_SELECT_OPTION);
     }
 
     private void sendGreeting() {
         ConsolePrinter.printSeparator('*', 30);
-        System.out.println("Welcome to budget planning application");
+        ConsolePrinter.printMessage(Messages.GREETING);
     }
 
     /**
@@ -192,7 +185,7 @@ public class Menu {
 
 
     private void pressEnterKeyToContinue() {
-        System.out.println("Press Enter key to continue...");
+        ConsolePrinter.printMessage(Messages.PRESS_ENTER_KEY);
         try {
             System.in.read();
         } catch (Exception e) {
@@ -201,6 +194,7 @@ public class Menu {
 
     /**
      * converts string array into string, where every entry is separated with newline
+     *
      * @param arrayProvided
      * @return
      */
@@ -211,5 +205,4 @@ public class Menu {
         }
         return sb.toString();
     }
-
 }

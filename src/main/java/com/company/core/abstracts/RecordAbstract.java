@@ -12,8 +12,8 @@ import java.util.UUID;
 
 public abstract class RecordAbstract {
 
-    private UUID globalId;
-    private int localId;
+    private final UUID globalId;
+    private final int localId;
 
     private LocalDateTime dateTime;
     private BigDecimal sum;
@@ -52,10 +52,6 @@ public abstract class RecordAbstract {
 
     public int getLocalId() {
         return localId;
-    }
-
-    public void setLocalId(int localId) {
-        this.localId = localId;
     }
 
     public UUID getGlobalId() {

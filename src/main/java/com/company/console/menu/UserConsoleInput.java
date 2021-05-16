@@ -19,103 +19,95 @@ public class UserConsoleInput {
     }
 
     public int enterInt(String message) {
-        System.out.print(message);
+        ConsolePrinter.printMessage(message);
         while (sc.hasNext()) {
             if (sc.hasNextInt()) {
                 int i = Integer.parseInt(sc.next());
                 return i;
             } else {
-                System.out.println("Value must be integer number! Try again");
+                ConsolePrinter.printMessageLine(Messages.VALUE_INTEGER);
             }
-            System.out.println("" + sc.next());
+            ConsolePrinter.printMessageLine("" + sc.next());
         }
         return 0;
     }
 
     public String enterString(String message) {
-        System.out.print(message);
+        ConsolePrinter.printMessage(message);
         sc.nextLine();
         String result = sc.nextLine();
         return result;
     }
 
     public BigDecimal enterBigDecimal(String message) {
-        System.out.print(message);
+        ConsolePrinter.printMessage(message);
         while (sc.hasNext()) {
             if (sc.hasNextBigDecimal()) {
                 BigDecimal i = new BigDecimal(sc.next());
                 return i;
             } else {
-                System.out.println("Value must be numeric value! Try again");
+                ConsolePrinter.printMessageLine(Messages.VALUE_NUMERIC);
             }
-            System.out.println("" + sc.next());
+            ConsolePrinter.printMessageLine("" + sc.next());
         }
         return null;
     }
 
     public LocalDateTime enterDateTime() {
-        System.out.println("Enter date and time (format - yyyy-MM-dd HH:mm)");
-        System.out.println("Enter \"Now\" to use current date and time");
+        ConsolePrinter.printMessageLine(Messages.DATE_FORMAT);
+        ConsolePrinter.printMessageLine(Messages.ENTER_NOW_DATE);
 
         LocalDateTime resultDateTime = LocalDateTime.now();
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         sc.nextLine();
-        while(true) {
+        while (true) {
             String dateTimeInput = sc.nextLine();
             if (dateTimeInput.toLowerCase(Locale.ROOT).equals("now")) return resultDateTime;
             try {
                 resultDateTime = LocalDateTime.parse(dateTimeInput, dateTimeFormatter);
-                System.out.println(resultDateTime.toString());
+                ConsolePrinter.printMessageLine(resultDateTime.toString());
 
                 if (resultDateTime.isBefore(LocalDateTime.now())) {
                     return resultDateTime;
                 } else {
-                    System.out.println("You entered future time, try again");
+                    ConsolePrinter.printMessageLine(Messages.FUTURE_TIME);
                 }
 
             } catch (DateTimeParseException e) {
-                System.out.println("Wrong date time input. Format is yyyy-MM-dd HH:mm");
+                ConsolePrinter.printMessageLine(Messages.WRONG_TIME_FORMAT);
             }
         }
     }
 
-    public PaymentMethod enterPaymentMethod()
-    {
-        System.out.println("Enter payment method: ");
-        System.out.println("1. Bank transaction");
-        System.out.println("2. Cash");
+    public PaymentMethod enterPaymentMethod() {
+        ConsolePrinter.printMessage(Messages.ENTER_PAYMENT_METHOD);
 
         while (sc.hasNext()) {
             if (sc.hasNextInt()) {
                 int i = Integer.parseInt(sc.next());
-                switch(i){
+                switch (i) {
                     case 1:
                         return PaymentMethod.BANK_TRANSACTION;
                     case 2:
                         return PaymentMethod.CASH;
                     default:
-                        System.out.println("Wrong input, pick number out of possible options");
+                        ConsolePrinter.printMessageLine(Messages.MENU_WRONG_INPUT);
                 }
             } else {
-                System.out.println("Value must be numeric value! Try again");
+                ConsolePrinter.printMessageLine(Messages.VALUE_NUMERIC);
             }
-            System.out.println("" + sc.next());
+            ConsolePrinter.printMessageLine("" + sc.next());
         }
         return null;
     }
 
 
     public TransactionCategory enterCategory() {
-        System.out.print("Enter category: ");
-        System.out.println("1. ASSET");
-        System.out.println("2. LIABILITY");
-        System.out.println("3. EQUITY");
-        System.out.println("4. REVENUE");
-        System.out.println("5. EXPENSES");
+        ConsolePrinter.printMessage(Messages.ENTER_CATEGORY);
         while (sc.hasNext()) {
             if (sc.hasNextInt()) {
                 int i = Integer.parseInt(sc.next());
-                switch(i){
+                switch (i) {
                     case 1:
                         return TransactionCategory.ASSET;
                     case 2:
@@ -127,12 +119,12 @@ public class UserConsoleInput {
                     case 5:
                         return TransactionCategory.EXPENSES;
                     default:
-                        System.out.println("Wrong input, pick number out of possible options");
+                        ConsolePrinter.printMessageLine(Messages.MENU_WRONG_INPUT);
                 }
             } else {
-                System.out.println("Value must be numeric value! Try again");
+                ConsolePrinter.printMessageLine(Messages.VALUE_NUMERIC);
             }
-            System.out.println("" + sc.next());
+            ConsolePrinter.printMessageLine("" + sc.next());
         }
         return null;
     }
