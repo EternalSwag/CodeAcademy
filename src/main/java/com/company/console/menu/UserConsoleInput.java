@@ -103,29 +103,12 @@ public class UserConsoleInput {
 
 
     public TransactionCategory enterCategory() {
-        ConsolePrinter.printMessage(Messages.ENTER_CATEGORY);
-        while (sc.hasNext()) {
-            if (sc.hasNextInt()) {
-                int i = Integer.parseInt(sc.next());
-                switch (i) {
-                    case 1:
-                        return TransactionCategory.ASSET;
-                    case 2:
-                        return TransactionCategory.LIABILITY;
-                    case 3:
-                        return TransactionCategory.EQUITY;
-                    case 4:
-                        return TransactionCategory.REVENUE;
-                    case 5:
-                        return TransactionCategory.EXPENSES;
-                    default:
-                        ConsolePrinter.printMessageLine(Messages.MENU_WRONG_INPUT);
-                }
-            } else {
-                ConsolePrinter.printMessageLine(Messages.VALUE_NUMERIC);
-            }
-            ConsolePrinter.printMessageLine("" + sc.next());
+        int input = enterInt(Messages.ENTER_CATEGORY);
+
+        while (input < 1 || input > TransactionCategory.values().length - 1) {
+            //ConsolePrinter.printMessageLine(Messages.MENU_WRONG_INPUT);
+            input = enterInt(Messages.MENU_WRONG_INPUT);
         }
-        return null;
+        return TransactionCategory.values()[input - 1];
     }
 }
