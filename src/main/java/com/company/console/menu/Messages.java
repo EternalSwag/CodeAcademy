@@ -1,6 +1,7 @@
 package com.company.console.menu;
 
 public class Messages {
+
     public static final String MENU_WRONG_INPUT = "Wrong input, select right menu option: ";
     public static final String MAIN_MENU = "Main menu: ";
     public static final String MENU_EXIT_MESSAGE = "Thanks for using our service";
@@ -44,4 +45,8 @@ public class Messages {
             "4. List all expenses\n" +
             "5. Delete record\n" +
             "0. Exit\n";
+    public static final String SELECT_SCENARIO = "Select scenario:\n" +
+            "1. Start new budget from scratch\n" +
+            "2. Use premade budget\n";
+
 }

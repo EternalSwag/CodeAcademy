@@ -11,7 +11,7 @@ public enum TransactionCategory {
         this.transactionCode = transactionCode;
     }
 
-    private int transactionCode;
+    private final int transactionCode;
 
     public int getTransactionCode() {
         return transactionCode;

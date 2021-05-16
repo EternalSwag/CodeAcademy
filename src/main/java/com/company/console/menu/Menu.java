@@ -26,7 +26,25 @@ public class Menu {
 
     public void entryMenu() {
         sendGreeting();
-        mainMenu();
+        scenarioSelectionMenu();
+    }
+
+    public void scenarioSelectionMenu()
+    {
+        ConsolePrinter.printMessage(Messages.SELECT_SCENARIO);
+        int choice = userInput.enterInt(Messages.ENTER_YOUR_CHOICE);
+        switch (choice)
+        {
+            case 1:
+                mainMenu();
+                break;
+            case 2:
+                budget.addSampleRecords();
+                mainMenu();
+                break;
+            default:
+                scenarioSelectionMenu();
+        }
     }
 
     private void mainMenu() {
@@ -86,11 +104,11 @@ public class Menu {
         //display all records first
         switch (transactionType) {
             case INCOME:
-                ConsolePrinter.printMessageLine(arrayToString(budget.fetchIncomeList(true)));
+                ConsolePrinter.printMessageLine(listToString(budget.fetchIncomeList(true)));
                 ConsolePrinter.printSeparator('-', 30);
                 break;
             case EXPENDITURE:
-                ConsolePrinter.printMessageLine(arrayToString(budget.fetchExpenseList(true)));
+                ConsolePrinter.printMessageLine(listToString(budget.fetchExpenseList(true)));
                 ConsolePrinter.printSeparator('-', 30);
                 break;
             default:
@@ -119,14 +137,14 @@ public class Menu {
 
     private void listAllExpensesSubmenu() {
         ConsolePrinter.printMessageLine(Messages.TOTAL_EXPENSES);
-        ConsolePrinter.printMessageLine(arrayToString(budget.fetchExpenseList(true)));
+        ConsolePrinter.printMessageLine(listToString(budget.fetchExpenseList(true)));
         pressEnterKeyToContinue();
         mainMenu();
     }
 
     private void listAllIncomeSubmenu() {
         ConsolePrinter.printMessageLine(Messages.TOTAL_INCOME);
-        ConsolePrinter.printMessageLine(arrayToString(budget.fetchIncomeList(true)));
+        ConsolePrinter.printMessageLine(listToString(budget.fetchIncomeList(true)));
         pressEnterKeyToContinue();
         mainMenu();
     }
@@ -193,12 +211,12 @@ public class Menu {
     }
 
     /**
-     * converts string array into string, where every entry is separated with newline
+     * converts string list into single string, where every entry is separated with newline
      *
      * @param arrayProvided
      * @return
      */
-    private String arrayToString(List<String> arrayProvided) {
+    private String listToString(List<String> arrayProvided) {
         StringBuilder sb = new StringBuilder();
         for (String s : arrayProvided) {
             sb.append(s + "\n");
