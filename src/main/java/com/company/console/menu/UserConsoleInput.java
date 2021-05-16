@@ -106,7 +106,6 @@ public class UserConsoleInput {
         int input = enterInt(Messages.ENTER_CATEGORY);
 
         while (input < 1 || input > TransactionCategory.values().length - 1) {
-            //ConsolePrinter.printMessageLine(Messages.MENU_WRONG_INPUT);
             input = enterInt(Messages.MENU_WRONG_INPUT);
         }
         return TransactionCategory.values()[input - 1];
