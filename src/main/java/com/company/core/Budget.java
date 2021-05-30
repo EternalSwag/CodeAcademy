@@ -14,8 +14,8 @@ import java.util.List;
 public class Budget {
 
     private BigDecimal balance;
-    private List<IncomeRecord> incomeList;
-    private List<ExpenditureRecord> expensesList;
+    // private List<IncomeRecord> incomeList;
+    // private List<ExpenditureRecord> expensesList;
 
     private TransactionRepository transactionRepository;
 
@@ -23,18 +23,21 @@ public class Budget {
 
     public Budget() {
         balance = new BigDecimal("0");
-        incomeList = new ArrayList<>();
-        expensesList = new ArrayList<>();
+//        incomeList = new ArrayList<>();
+//        expensesList = new ArrayList<>();
+        transactionRepository = new TransactionRepository();
 
     }
 
     public void addIncome(LocalDateTime date, BigDecimal sum, TransactionCategory category, PaymentMethod paymentMethod, IncomeType incomeType, String info) {
-        incomeList.add(new IncomeRecord(localRecordCount, date, sum, category, paymentMethod, incomeType, info));
+        RecordAbstract createdIncome = new IncomeRecord(localRecordCount, date, sum, category, paymentMethod, incomeType, info);
+        transactionRepository.createTransaction(createdIncome);
         localRecordCount++;
     }
 
     public void addExpenditure(LocalDateTime date, BigDecimal sum, TransactionCategory category, PaymentMethod paymentMethod, ExpenditureType expenditureType, String info) {
-        expensesList.add(new ExpenditureRecord(localRecordCount, date, sum, category, paymentMethod, expenditureType, info));
+        RecordAbstract createdExpenditure = new ExpenditureRecord(localRecordCount, date, sum, category, paymentMethod, expenditureType, info);
+        transactionRepository.createTransaction(createdExpenditure);
         localRecordCount++;
     }
 
@@ -42,29 +45,29 @@ public class Budget {
     /**
      * provides list of all entries in operations list
      *
-     * @param recordList    record list
-     * @param startsFromOne flag, indicating should outputs first index starts from 0 (false) or 1 (true)
+     * @param transactionList transaction list provided
+     * @param startsFromOne   flag, indicating should outputs first index starts from 0 (false) or 1 (true)
      * @return list of strings
      */
-    public ArrayList<String> getOperationListToStringList(List<RecordAbstract> recordList, boolean startsFromOne) {
+    public ArrayList<String> getOperationListToStringList(List<RecordAbstract> transactionList, boolean startsFromOne) {
         ArrayList<String> result = new ArrayList<>();
-        for (int i = 0; i < recordList.size(); i++) {
+        for (int i = 0; i < transactionList.size(); i++) {
             int index = startsFromOne ? i + 1 : i;
-            result.add((index) + ". " + recordList.get(i).toString());
+            result.add((index) + ". " + transactionList.get(i).toString() + "\n");
         }
         return result;
     }
 
     /**
-     * @param recordList    record list
-     * @param startsFromOne flag, indicating should outputs first index starts from 0 (false) or 1 (true)
+     * @param transactionList transaction list provided
+     * @param startsFromOne   flag, indicating should outputs first index starts from 0 (false) or 1 (true)
      * @return string
      */
-    public String getOperationListToString(List<RecordAbstract> recordList, boolean startsFromOne) {
+    public String getOperationListToString(List<RecordAbstract> transactionList, boolean startsFromOne) {
         StringBuilder result = new StringBuilder();
-        for (int i = 0; i < recordList.size(); i++) {
+        for (int i = 0; i < transactionList.size(); i++) {
             int index = startsFromOne ? i + 1 : i;
-            result.append((index) + ". " + recordList.get(i).toString() + "\n");
+            result.append((index) + ". " + transactionList.get(i).toString() + "\n");
         }
         return result.toString();
     }
@@ -76,12 +79,12 @@ public class Budget {
      * @return
      */
     public List<String> fetchIncomeList(boolean startsFromOne) {
-        ArrayList<String> incomeOperations = getOperationListToStringList((List<RecordAbstract>) (List<? extends RecordAbstract>) incomeList, startsFromOne);
+        ArrayList<String> incomeOperations = getOperationListToStringList(transactionRepository.getRecordsByTransactionType(TransactionType.INCOME), startsFromOne);
         return incomeOperations;
     }
 
     public List<String> fetchExpenseList(boolean startsFromOne) {
-        ArrayList<String> expenseOperations = getOperationListToStringList((List<RecordAbstract>) (List<? extends RecordAbstract>) expensesList, startsFromOne);
+        ArrayList<String> expenseOperations = getOperationListToStringList(transactionRepository.getRecordsByTransactionType(TransactionType.EXPENDITURE), startsFromOne);
         return expenseOperations;
     }
 
@@ -102,13 +105,19 @@ public class Budget {
     }
 
     private BigDecimal totalIncome() {
-        return totalSumOfRecords((List<RecordAbstract>) (List<? extends RecordAbstract>) incomeList);
+        return totalSumOfRecords((List<RecordAbstract>) (List<? extends RecordAbstract>) transactionRepository.getRecordsByTransactionType(TransactionType.INCOME));
     }
 
     private BigDecimal totalExpenses() {
-        return totalSumOfRecords((List<RecordAbstract>) (List<? extends RecordAbstract>) expensesList);
+        return totalSumOfRecords((List<RecordAbstract>) (List<? extends RecordAbstract>) transactionRepository.getRecordsByTransactionType(TransactionType.EXPENDITURE));
     }
 
+    /**
+     * provides total sum of provided records. It doesn't care if its expenses or income, so filter beforehand
+     *
+     * @param recordList
+     * @return
+     */
     private BigDecimal totalSumOfRecords(List<RecordAbstract> recordList) {
         BigDecimal result = new BigDecimal("0");
         for (RecordAbstract record : recordList) {
@@ -124,38 +133,8 @@ public class Budget {
      * @return record matching id, or null if found not any
      */
     public RecordAbstract getRecordByLocalId(int id) {
-        RecordAbstract matchingObject = incomeList.stream().
-                filter(p -> p.getLocalId() == id).
-                findAny().orElse(null);
-
-        if (matchingObject == null) {
-            matchingObject = expensesList.stream().
-                    filter(p -> p.getLocalId() == id).
-                    findAny().orElse(null);
-        }
+        RecordAbstract matchingObject = transactionRepository.getRecordByLocalId(id);
         return matchingObject;
-    }
-
-    /**
-     * public method to perform delete record by id
-     *
-     * @param transactionType - expense, income, etc
-     * @param id              - id to delete
-     * @return true if succeeds, false ir fails
-     */
-    public boolean deleteRecord(TransactionType transactionType, int id) {
-        boolean result = false;
-        switch (transactionType) {
-            case INCOME:
-                result = deleteRecord((List<RecordAbstract>) (List<? extends RecordAbstract>) incomeList, id);
-                break;
-            case EXPENDITURE:
-                result = deleteRecord((List<RecordAbstract>) (List<? extends RecordAbstract>) expensesList, id);
-                break;
-            default:
-                return false;
-        }
-        return result;
     }
 
     /**
@@ -174,17 +153,15 @@ public class Budget {
     /**
      * Deletes record by provided local id
      *
-     * @param listProvided - income, expense list, etc
-     * @param localId      - id of record
+     * @param localId - local id of record
      * @return true if deletion successful, false if no such record found
      */
-    private boolean deleteRecord(List<RecordAbstract> listProvided, int localId) {
-        RecordAbstract entryToDelete = getRecordByLocalIdSpecified(listProvided, localId);
-
-        if (entryToDelete == null) {
+    public boolean deleteRecord(int localId) {
+        try {
+            transactionRepository.deleteRecordByLocalId(localId);
+        } catch (Exception e) {
             return false;
         }
-        listProvided.remove(entryToDelete);
         return true;
     }
 
@@ -197,5 +174,9 @@ public class Budget {
         this.addIncome(LocalDateTime.now(), new BigDecimal("2200"), TransactionCategory.ASSET, PaymentMethod.BANK_TRANSACTION, IncomeType.SALARY, "Salary");
         this.addExpenditure(LocalDateTime.now(), new BigDecimal("50"), TransactionCategory.EXPENSES, PaymentMethod.CASH, ExpenditureType.GROCERIES, "bottle of whiskey");
         this.addExpenditure(LocalDateTime.now(), new BigDecimal("15"), TransactionCategory.EXPENSES, PaymentMethod.CASH, ExpenditureType.LUXURY_GOODS, "a cigar");
+    }
+
+    public TransactionRepository getTransactionRepository() {
+        return transactionRepository;
     }
 }

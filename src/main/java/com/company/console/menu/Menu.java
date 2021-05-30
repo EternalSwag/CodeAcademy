@@ -4,7 +4,9 @@ import com.company.console.menu.colortext.ColorsBackground;
 import com.company.console.menu.colortext.ColorsText;
 import com.company.core.Budget;
 import com.company.core.enums.*;
+import com.company.core.modules.RecordAbstract;
 
+import java.io.Console;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -29,12 +31,10 @@ public class Menu {
         scenarioSelectionMenu();
     }
 
-    public void scenarioSelectionMenu()
-    {
+    public void scenarioSelectionMenu() {
         ConsolePrinter.printMessage(ColorsText.ANSI_YELLOW, Messages.SELECT_SCENARIO);
         int choice = userInput.enterInt(Messages.ENTER_YOUR_CHOICE);
-        switch (choice)
-        {
+        switch (choice) {
             case 1:
                 mainMenu();
                 break;
@@ -69,6 +69,8 @@ public class Menu {
                 listAllExpensesSubmenu();
                 break;
             case 5:
+                updateRecordSubmenu();
+            case 6:
                 deleteRecordSubmenu();
                 break;
             case 0:
@@ -79,6 +81,36 @@ public class Menu {
                 processMainMenuSelection();
         }
     }
+
+    private void updateRecordSubmenu() {
+        int mainSelection = userInput.enterInt(Messages.ENTER_ID_OF_RECORD_TO_UPDATE);
+        RecordAbstract selectedTransaction = budget.getTransactionRepository().getRecordByLocalId(mainSelection);
+        if (selectedTransaction != null) {
+            TransactionType transactionType = selectedTransaction.getTransactionType();
+            switch (transactionType) {
+                case INCOME:
+                    updateIncomeRecordByEachFieldMenu(mainSelection);
+                    break;
+                case EXPENDITURE:
+                    updateExpenditureRecordByEachFieldMenu(mainSelection);
+                    break;
+                default:
+                    ConsolePrinter.printMessageLine(Messages.UNKNOWN_TRANSACTION_TYPE);
+            }
+        } else {
+            ConsolePrinter.printMessageLine("The transaction with id " + mainSelection + " doesn't exist");
+        }
+        mainMenu();
+    }
+
+    private void updateExpenditureRecordByEachFieldMenu(int localTransactionId) {
+        System.out.println("expense edit");
+    }
+
+    private void updateIncomeRecordByEachFieldMenu(int localTransactionId) {
+        System.out.println("income edit");
+    }
+
 
     private void deleteRecordSubmenu() {
 
@@ -115,7 +147,8 @@ public class Menu {
                 deleteRecordSubmenu();
         }
         int choice = userInput.enterInt(Messages.ENTER_IDTODELETE);
-        boolean deleteOperationResult = budget.deleteRecord(transactionType, choice);
+
+        boolean deleteOperationResult = budget.deleteRecord(choice);
 
         if (deleteOperationResult) {
             ConsolePrinter.printMessageLine(ColorsText.ANSI_GREEN, Messages.OPERATION_SUCCESFUL);
@@ -157,7 +190,7 @@ public class Menu {
         PaymentMethod providedPaymentMethod = userInput.enterPaymentMethod();
         String providedInfo = userInput.enterString(Messages.ENTER_ADDITIONAL_INFO);
         ExpenditureType expenditureType = userInput.enterExpenditureType();
-        budget.addExpenditure(providedDate, providedSum, providedCategory, providedPaymentMethod,expenditureType, providedInfo);
+        budget.addExpenditure(providedDate, providedSum, providedCategory, providedPaymentMethod, expenditureType, providedInfo);
         mainMenu();
     }
 
@@ -169,7 +202,7 @@ public class Menu {
         PaymentMethod providedPaymentMethod = userInput.enterPaymentMethod();
         String providedInfo = userInput.enterString(Messages.ENTER_ADDITIONAL_INFO);
         IncomeType incomeType = userInput.enterIncomeType();
-        budget.addIncome(providedDate, providedSum, providedCategory, providedPaymentMethod, incomeType,  providedInfo);
+        budget.addIncome(providedDate, providedSum, providedCategory, providedPaymentMethod, incomeType, providedInfo);
         mainMenu();
     }
 

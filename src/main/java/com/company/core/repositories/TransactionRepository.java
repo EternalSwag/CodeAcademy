@@ -1,6 +1,5 @@
 package com.company.core.repositories;
 
-
 import com.company.core.enums.TransactionType;
 import com.company.core.modules.RecordAbstract;
 
