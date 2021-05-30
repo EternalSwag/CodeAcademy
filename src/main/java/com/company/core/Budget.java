@@ -195,5 +195,4 @@ public class Budget {
         this.addExpenditure(LocalDateTime.now(), new BigDecimal("50"), TransactionCategory.EXPENSES, PaymentMethod.CASH, ExpenditureType.GROCERIES, "bottle of whiskey");
         this.addExpenditure(LocalDateTime.now(), new BigDecimal("15"), TransactionCategory.EXPENSES, PaymentMethod.CASH, ExpenditureType.LUXURY_GOODS, "a cigar");
     }
-
 }

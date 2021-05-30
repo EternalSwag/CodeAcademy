@@ -69,6 +69,13 @@ public abstract class RecordAbstract {
         return new BigDecimal(df.format(value));
     }
 
+    public TransactionType getTransactionType() {
+        return transactionType;
+    }
+
+    public void setTransactionType(TransactionType transactionType) {
+        this.transactionType = transactionType;
+    }
 
     @Override
     public String toString() {
@@ -84,5 +91,4 @@ public abstract class RecordAbstract {
                 ", " + additionalInfo;
 
     }
-
 }
