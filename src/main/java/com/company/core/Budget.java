@@ -1,11 +1,9 @@
 package com.company.core;
 
-import com.company.core.abstracts.RecordAbstract;
-import com.company.core.enums.PaymentMethod;
-import com.company.core.enums.TransactionCategory;
-import com.company.core.enums.TransactionType;
-import com.company.core.transactions.ExpenditureRecord;
-import com.company.core.transactions.IncomeRecord;
+import com.company.core.enums.*;
+import com.company.core.modules.RecordAbstract;
+import com.company.core.modules.transactions.ExpenditureRecord;
+import com.company.core.modules.transactions.IncomeRecord;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -17,21 +15,23 @@ public class Budget {
     private BigDecimal balance;
     private List<IncomeRecord> incomeList;
     private List<ExpenditureRecord> expensesList;
+
     private int localRecordCount = 0;
 
     public Budget() {
         balance = new BigDecimal("0");
         incomeList = new ArrayList<>();
         expensesList = new ArrayList<>();
+
     }
 
-    public void addIncome(LocalDateTime date, BigDecimal sum, TransactionCategory category, PaymentMethod paymentMethod, String info) {
-        incomeList.add(new IncomeRecord(localRecordCount, date, sum, category, paymentMethod, info));
+    public void addIncome(LocalDateTime date, BigDecimal sum, TransactionCategory category, PaymentMethod paymentMethod, IncomeType incomeType, String info) {
+        incomeList.add(new IncomeRecord(localRecordCount, date, sum, category, paymentMethod, incomeType, info));
         localRecordCount++;
     }
 
-    public void addExpenditure(LocalDateTime date, BigDecimal sum, TransactionCategory category, PaymentMethod paymentMethod, String info) {
-        expensesList.add(new ExpenditureRecord(localRecordCount, date, sum, category, paymentMethod, info));
+    public void addExpenditure(LocalDateTime date, BigDecimal sum, TransactionCategory category, PaymentMethod paymentMethod, ExpenditureType expenditureType, String info) {
+        expensesList.add(new ExpenditureRecord(localRecordCount, date, sum, category, paymentMethod, expenditureType, info));
         localRecordCount++;
     }
 
@@ -189,11 +189,11 @@ public class Budget {
      * Adds sample entries to this budget. For testing purposes
      */
     public void addSampleRecords() {
-        this.addIncome(LocalDateTime.now(), new BigDecimal("2500"), TransactionCategory.ASSET, PaymentMethod.BANK_TRANSACTION, "Salary");
-        this.addIncome(LocalDateTime.now(), new BigDecimal("2800"), TransactionCategory.ASSET, PaymentMethod.BANK_TRANSACTION, "Salary");
-        this.addIncome(LocalDateTime.now(), new BigDecimal("2200"), TransactionCategory.ASSET, PaymentMethod.BANK_TRANSACTION, "Salary");
-        this.addExpenditure(LocalDateTime.now(), new BigDecimal("50"), TransactionCategory.EXPENSES, PaymentMethod.CASH, "bottle of whiskey");
-        this.addExpenditure(LocalDateTime.now(), new BigDecimal("15"), TransactionCategory.EXPENSES, PaymentMethod.CASH, "a cigar");
+        this.addIncome(LocalDateTime.now(), new BigDecimal("2500"), TransactionCategory.ASSET, PaymentMethod.BANK_TRANSACTION, IncomeType.SALARY, "Salary");
+        this.addIncome(LocalDateTime.now(), new BigDecimal("2800"), TransactionCategory.ASSET, PaymentMethod.BANK_TRANSACTION, IncomeType.SALARY, "Salary");
+        this.addIncome(LocalDateTime.now(), new BigDecimal("2200"), TransactionCategory.ASSET, PaymentMethod.BANK_TRANSACTION, IncomeType.SALARY, "Salary");
+        this.addExpenditure(LocalDateTime.now(), new BigDecimal("50"), TransactionCategory.EXPENSES, PaymentMethod.CASH, ExpenditureType.GROCERIES, "bottle of whiskey");
+        this.addExpenditure(LocalDateTime.now(), new BigDecimal("15"), TransactionCategory.EXPENSES, PaymentMethod.CASH, ExpenditureType.LUXURY_GOODS, "a cigar");
     }
 
 }

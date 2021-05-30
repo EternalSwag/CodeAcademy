@@ -1,9 +1,9 @@
 package com.company.console.menu;
 
+import com.company.console.menu.colortext.ColorsBackground;
+import com.company.console.menu.colortext.ColorsText;
 import com.company.core.Budget;
-import com.company.core.enums.PaymentMethod;
-import com.company.core.enums.TransactionCategory;
-import com.company.core.enums.TransactionType;
+import com.company.core.enums.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -31,7 +31,7 @@ public class Menu {
 
     public void scenarioSelectionMenu()
     {
-        ConsolePrinter.printMessage(Messages.SELECT_SCENARIO);
+        ConsolePrinter.printMessage(ColorsText.ANSI_YELLOW, Messages.SELECT_SCENARIO);
         int choice = userInput.enterInt(Messages.ENTER_YOUR_CHOICE);
         switch (choice)
         {
@@ -75,7 +75,7 @@ public class Menu {
                 exit();
                 break;
             default:
-                ConsolePrinter.printMessageLine(Messages.MENU_WRONG_INPUT);
+                ConsolePrinter.printMessageLine(ColorsText.ANSI_RED, Messages.MENU_WRONG_INPUT);
                 processMainMenuSelection();
         }
     }
@@ -95,7 +95,7 @@ public class Menu {
                 mainMenu();
                 break;
             default:
-                ConsolePrinter.printMessageLine(Messages.MENU_WRONG_INPUT);
+                ConsolePrinter.printMessageLine(ColorsText.ANSI_RED, Messages.MENU_WRONG_INPUT);
                 deleteRecordSubmenu();
         }
     }
@@ -105,11 +105,11 @@ public class Menu {
         switch (transactionType) {
             case INCOME:
                 ConsolePrinter.printMessageLine(listToString(budget.fetchIncomeList(true)));
-                ConsolePrinter.printSeparator('-', 30);
+                ConsolePrinter.printSeparator('-', 50);
                 break;
             case EXPENDITURE:
                 ConsolePrinter.printMessageLine(listToString(budget.fetchExpenseList(true)));
-                ConsolePrinter.printSeparator('-', 30);
+                ConsolePrinter.printSeparator('-', 50);
                 break;
             default:
                 deleteRecordSubmenu();
@@ -118,71 +118,73 @@ public class Menu {
         boolean deleteOperationResult = budget.deleteRecord(transactionType, choice);
 
         if (deleteOperationResult) {
-            ConsolePrinter.printMessageLine(Messages.OPERATION_SUCCESFUL);
+            ConsolePrinter.printMessageLine(ColorsText.ANSI_GREEN, Messages.OPERATION_SUCCESFUL);
         } else {
-            ConsolePrinter.printMessageLine(Messages.RECORD_DOESNT_EXIST);
+            ConsolePrinter.printMessageLine(ColorsText.ANSI_RED, Messages.RECORD_DOESNT_EXIST);
         }
         deleteRecordSubmenu();
     }
 
     private void deleteSubmenuMessage() {
-        ConsolePrinter.printMessage(Messages.DELETE_SUBMENU_MESSAGE);
+        ConsolePrinter.printMessage(ColorsText.ANSI_YELLOW, Messages.DELETE_SUBMENU_MESSAGE);
     }
 
     private void exit() {
-        ConsolePrinter.printMessage(Messages.MENU_EXIT_MESSAGE);
+        ConsolePrinter.printMessage(ColorsText.ANSI_YELLOW, Messages.MENU_EXIT_MESSAGE);
         sc.close();
         System.exit(0);
     }
 
     private void listAllExpensesSubmenu() {
-        ConsolePrinter.printMessageLine(Messages.TOTAL_EXPENSES);
+        ConsolePrinter.printMessageLine(ColorsText.ANSI_YELLOW, Messages.TOTAL_EXPENSES);
         ConsolePrinter.printMessageLine(listToString(budget.fetchExpenseList(true)));
         pressEnterKeyToContinue();
         mainMenu();
     }
 
     private void listAllIncomeSubmenu() {
-        ConsolePrinter.printMessageLine(Messages.TOTAL_INCOME);
+        ConsolePrinter.printMessageLine(ColorsText.ANSI_YELLOW, Messages.TOTAL_INCOME);
         ConsolePrinter.printMessageLine(listToString(budget.fetchIncomeList(true)));
         pressEnterKeyToContinue();
         mainMenu();
     }
 
     private void addExpenseRecordSubmenu() {
-        ConsolePrinter.printMessageLine(Messages.ADD_EXPENSE_RECORD);
+        ConsolePrinter.printMessageLine(ColorsText.ANSI_YELLOW, Messages.ADD_EXPENSE_RECORD);
         LocalDateTime providedDate = userInput.enterDateTime();
         BigDecimal providedSum = userInput.enterBigDecimal(Messages.ENTER_SUM);
         TransactionCategory providedCategory = userInput.enterCategory();
         PaymentMethod providedPaymentMethod = userInput.enterPaymentMethod();
         String providedInfo = userInput.enterString(Messages.ENTER_ADDITIONAL_INFO);
-        budget.addExpenditure(providedDate, providedSum, providedCategory, providedPaymentMethod, providedInfo);
+        ExpenditureType expenditureType = userInput.enterExpenditureType();
+        budget.addExpenditure(providedDate, providedSum, providedCategory, providedPaymentMethod,expenditureType, providedInfo);
         mainMenu();
     }
 
     private void addIncomeRecordSubmenu() {
-        ConsolePrinter.printMessageLine(Messages.ADD_INCOME_RECORD);
+        ConsolePrinter.printMessageLine(ColorsText.ANSI_YELLOW, Messages.ADD_INCOME_RECORD);
         LocalDateTime providedDate = userInput.enterDateTime();
         BigDecimal providedSum = userInput.enterBigDecimal(Messages.ENTER_SUM);
         TransactionCategory providedCategory = userInput.enterCategory();
         PaymentMethod providedPaymentMethod = userInput.enterPaymentMethod();
         String providedInfo = userInput.enterString(Messages.ENTER_ADDITIONAL_INFO);
-        budget.addIncome(providedDate, providedSum, providedCategory, providedPaymentMethod, providedInfo);
+        IncomeType incomeType = userInput.enterIncomeType();
+        budget.addIncome(providedDate, providedSum, providedCategory, providedPaymentMethod, incomeType,  providedInfo);
         mainMenu();
     }
 
 
     private void sendMainMenuMessage() {
-        ConsolePrinter.printSeparator('*', 30);
-        ConsolePrinter.printMessageLine(Messages.MAIN_MENU);
-        ConsolePrinter.printMessageLine(budget.info());
-        ConsolePrinter.printSeparator('*', 30);
+        ConsolePrinter.printSeparator('*', 50);
+        ConsolePrinter.printMessageLine(ColorsText.ANSI_YELLOW, Messages.MAIN_MENU);
+        ConsolePrinter.printMessageLine(ColorsText.ANSI_YELLOW, budget.info());
+        ConsolePrinter.printSeparator('*', 50);
         ConsolePrinter.printMessage(Messages.MAIN_MENU_SELECT_OPTION);
     }
 
     private void sendGreeting() {
-        ConsolePrinter.printSeparator('*', 30);
-        ConsolePrinter.printMessage(Messages.GREETING);
+        ConsolePrinter.printSeparator(ColorsText.ANSI_BLUE, '-', 50);
+        ConsolePrinter.printMessageLine(ColorsText.ANSI_YELLOW, Messages.GREETING);
     }
 
     /**
@@ -203,7 +205,7 @@ public class Menu {
 
 
     private void pressEnterKeyToContinue() {
-        ConsolePrinter.printMessage(Messages.PRESS_ENTER_KEY);
+        ConsolePrinter.printMessage(ColorsText.ANSI_YELLOW, Messages.PRESS_ENTER_KEY);
         try {
             System.in.read();
         } catch (Exception e) {

@@ -49,4 +49,12 @@ public class Messages {
             "1. Start new budget from scratch\n" +
             "2. Use premade budget\n";
 
+    public static final String ENTER_INCOME_TYPE = "Enter income type: \n" +
+            "1. Salary\n" +
+            "2. Revenue\n";
+    public static final String ENTER_EXPENDITURE_TYPE = "Enter expenditure type: \n" +
+            "1. Groceries\n" +
+            "2. Consumer goods\n" +
+            "3. Luxury goods\n" +
+            "4. Other\n";
 }

@@ -1,4 +1,4 @@
-package com.company.core.abstracts;
+package com.company.core.modules;
 
 import com.company.core.enums.PaymentMethod;
 import com.company.core.enums.TransactionCategory;
