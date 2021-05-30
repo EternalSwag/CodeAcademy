@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 import java.util.UUID;
 
 public abstract class RecordAbstract {
@@ -91,4 +92,13 @@ public abstract class RecordAbstract {
                 ", " + additionalInfo;
 
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        RecordAbstract that = (RecordAbstract) o;
+        return Objects.equals(globalId, that.globalId);
+    }
+
 }

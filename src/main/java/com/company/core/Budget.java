@@ -4,6 +4,7 @@ import com.company.core.enums.*;
 import com.company.core.modules.RecordAbstract;
 import com.company.core.modules.transactions.ExpenditureRecord;
 import com.company.core.modules.transactions.IncomeRecord;
+import com.company.core.repositories.TransactionRepository;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -15,6 +16,8 @@ public class Budget {
     private BigDecimal balance;
     private List<IncomeRecord> incomeList;
     private List<ExpenditureRecord> expensesList;
+
+    private TransactionRepository transactionRepository;
 
     private int localRecordCount = 0;
 
