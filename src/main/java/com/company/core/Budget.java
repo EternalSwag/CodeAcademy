@@ -14,19 +14,12 @@ import java.util.List;
 public class Budget {
 
     private BigDecimal balance;
-    // private List<IncomeRecord> incomeList;
-    // private List<ExpenditureRecord> expensesList;
-
     private TransactionRepository transactionRepository;
-
     private int localRecordCount = 0;
 
     public Budget() {
         balance = new BigDecimal("0");
-//        incomeList = new ArrayList<>();
-//        expensesList = new ArrayList<>();
         transactionRepository = new TransactionRepository();
-
     }
 
     public void addIncome(LocalDateTime date, BigDecimal sum, TransactionCategory category, PaymentMethod paymentMethod, IncomeType incomeType, String info) {
@@ -40,7 +33,6 @@ public class Budget {
         transactionRepository.createTransaction(createdExpenditure);
         localRecordCount++;
     }
-
 
     /**
      * provides list of all entries in operations list
@@ -178,5 +170,9 @@ public class Budget {
 
     public TransactionRepository getTransactionRepository() {
         return transactionRepository;
+    }
+
+    public int getLocalRecordCount() {
+        return localRecordCount;
     }
 }

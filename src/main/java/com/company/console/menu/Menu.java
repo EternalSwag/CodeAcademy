@@ -5,6 +5,8 @@ import com.company.console.menu.colortext.ColorsText;
 import com.company.core.Budget;
 import com.company.core.enums.*;
 import com.company.core.modules.RecordAbstract;
+import com.company.core.modules.transactions.ExpenditureRecord;
+import com.company.core.modules.transactions.IncomeRecord;
 
 import java.io.Console;
 import java.math.BigDecimal;
@@ -22,16 +24,19 @@ public class Menu {
         if (budget == null) {
             System.exit(0);
         }
-
         this.budget = budget;
     }
 
     public void entryMenu() {
         sendGreeting();
-        scenarioSelectionMenu();
+        try {
+            scenarioSelectionMenu();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 
-    public void scenarioSelectionMenu() {
+    public void scenarioSelectionMenu() throws Exception {
         ConsolePrinter.printMessage(ColorsText.ANSI_YELLOW, Messages.SELECT_SCENARIO);
         int choice = userInput.enterInt(Messages.ENTER_YOUR_CHOICE);
         switch (choice) {
@@ -47,12 +52,12 @@ public class Menu {
         }
     }
 
-    private void mainMenu() {
+    private void mainMenu() throws Exception {
         sendMainMenuMessage();
         processMainMenuSelection();
     }
 
-    private void processMainMenuSelection() {
+    private void processMainMenuSelection() throws Exception {
 
         int mainSelection = userInput.enterInt(Messages.ENTER_YOUR_CHOICE);
         switch (mainSelection) {
@@ -82,7 +87,7 @@ public class Menu {
         }
     }
 
-    private void updateRecordSubmenu() {
+    private void updateRecordSubmenu() throws Exception {
         int mainSelection = userInput.enterInt(Messages.ENTER_ID_OF_RECORD_TO_UPDATE);
         RecordAbstract selectedTransaction = budget.getTransactionRepository().getRecordByLocalId(mainSelection);
         if (selectedTransaction != null) {
@@ -103,16 +108,16 @@ public class Menu {
         mainMenu();
     }
 
-    private void updateExpenditureRecordByEachFieldMenu(int localTransactionId) {
-        System.out.println("expense edit");
+    private void updateExpenditureRecordByEachFieldMenu(int localTransactionId) throws Exception {
+        addRecordMenu(localTransactionId, TransactionType.EXPENDITURE, true);
     }
 
-    private void updateIncomeRecordByEachFieldMenu(int localTransactionId) {
-        System.out.println("income edit");
+    private void updateIncomeRecordByEachFieldMenu(int localTransactionId) throws Exception {
+        addRecordMenu(localTransactionId, TransactionType.INCOME, true);
     }
 
 
-    private void deleteRecordSubmenu() {
+    private void deleteRecordSubmenu() throws Exception {
 
         deleteSubmenuMessage();
         int choice = userInput.enterInt(Messages.ENTER_YOUR_CHOICE);
@@ -132,7 +137,7 @@ public class Menu {
         }
     }
 
-    private void deleteMenu(TransactionType transactionType) {
+    private void deleteMenu(TransactionType transactionType) throws Exception {
         //display all records first
         switch (transactionType) {
             case INCOME:
@@ -168,42 +173,65 @@ public class Menu {
         System.exit(0);
     }
 
-    private void listAllExpensesSubmenu() {
+    private void listAllExpensesSubmenu() throws Exception {
         ConsolePrinter.printMessageLine(ColorsText.ANSI_YELLOW, Messages.TOTAL_EXPENSES);
         ConsolePrinter.printMessageLine(listToString(budget.fetchExpenseList(true)));
         pressEnterKeyToContinue();
         mainMenu();
     }
 
-    private void listAllIncomeSubmenu() {
+    private void listAllIncomeSubmenu() throws Exception {
         ConsolePrinter.printMessageLine(ColorsText.ANSI_YELLOW, Messages.TOTAL_INCOME);
         ConsolePrinter.printMessageLine(listToString(budget.fetchIncomeList(true)));
         pressEnterKeyToContinue();
         mainMenu();
     }
 
-    private void addExpenseRecordSubmenu() {
-        ConsolePrinter.printMessageLine(ColorsText.ANSI_YELLOW, Messages.ADD_EXPENSE_RECORD);
+
+    /**
+     * menu to update record and write it to repository
+     *
+     * @param localId
+     * @param transactionType
+     * @param isThisEdit
+     * @throws Exception
+     */
+    private void addRecordMenu(int localId, TransactionType transactionType, boolean isThisEdit) throws Exception {
+        if (isThisEdit) {
+            ConsolePrinter.printMessageLine("You decided update this record:");
+            ConsolePrinter.printMessageLine(ColorsText.ANSI_RED, budget.getTransactionRepository().getRecordByLocalId(localId).toString());
+        }
+
         LocalDateTime providedDate = userInput.enterDateTime();
         BigDecimal providedSum = userInput.enterBigDecimal(Messages.ENTER_SUM);
         TransactionCategory providedCategory = userInput.enterCategory();
         PaymentMethod providedPaymentMethod = userInput.enterPaymentMethod();
         String providedInfo = userInput.enterString(Messages.ENTER_ADDITIONAL_INFO);
-        ExpenditureType expenditureType = userInput.enterExpenditureType();
-        budget.addExpenditure(providedDate, providedSum, providedCategory, providedPaymentMethod, expenditureType, providedInfo);
+
+        RecordAbstract updatedTransaction;
+
+        switch (transactionType) {
+            case INCOME:
+                IncomeType incomeType = userInput.enterIncomeType();
+                updatedTransaction = new IncomeRecord(budget.getLocalRecordCount(), providedDate, providedSum, providedCategory, providedPaymentMethod, incomeType, providedInfo);
+                break;
+            case EXPENDITURE:
+                ExpenditureType expenditureType = userInput.enterExpenditureType();
+                updatedTransaction = new ExpenditureRecord(budget.getLocalRecordCount(), providedDate, providedSum, providedCategory, providedPaymentMethod, expenditureType, providedInfo);
+                break;
+            default:
+                throw new Exception("Menu->addRecordMenu: unknown transaction type provided");
+        }
+        budget.getTransactionRepository().updateRecord(localId, updatedTransaction);
         mainMenu();
     }
 
-    private void addIncomeRecordSubmenu() {
-        ConsolePrinter.printMessageLine(ColorsText.ANSI_YELLOW, Messages.ADD_INCOME_RECORD);
-        LocalDateTime providedDate = userInput.enterDateTime();
-        BigDecimal providedSum = userInput.enterBigDecimal(Messages.ENTER_SUM);
-        TransactionCategory providedCategory = userInput.enterCategory();
-        PaymentMethod providedPaymentMethod = userInput.enterPaymentMethod();
-        String providedInfo = userInput.enterString(Messages.ENTER_ADDITIONAL_INFO);
-        IncomeType incomeType = userInput.enterIncomeType();
-        budget.addIncome(providedDate, providedSum, providedCategory, providedPaymentMethod, incomeType, providedInfo);
-        mainMenu();
+    private void addExpenseRecordSubmenu() throws Exception {
+        addRecordMenu(budget.getLocalRecordCount(), TransactionType.EXPENDITURE, false);
+    }
+
+    private void addIncomeRecordSubmenu() throws Exception {
+        addRecordMenu(budget.getLocalRecordCount(), TransactionType.INCOME, false);
     }
 
 

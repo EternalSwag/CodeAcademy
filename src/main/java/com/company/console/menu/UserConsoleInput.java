@@ -123,7 +123,7 @@ public class UserConsoleInput {
 
     public ExpenditureType enterExpenditureType() {
         int input = enterInt(Messages.ENTER_EXPENDITURE_TYPE);
-        while (input < 1 || input > IncomeType.values().length) {
+        while (input < 1 || input > ExpenditureType.values().length) {
             input = enterInt(Messages.MENU_WRONG_INPUT);
         }
         return ExpenditureType.values()[input - 1];
