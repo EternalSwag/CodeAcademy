@@ -7,6 +7,7 @@ import com.company.core.enums.*;
 import com.company.core.modules.RecordAbstract;
 import com.company.core.modules.transactions.ExpenditureRecord;
 import com.company.core.modules.transactions.IncomeRecord;
+import com.company.core.services.TransactionDataOutput;
 
 import java.io.Console;
 import java.math.BigDecimal;
@@ -118,7 +119,6 @@ public class Menu {
 
 
     private void deleteRecordSubmenu() throws Exception {
-
         deleteSubmenuMessage();
         int choice = userInput.enterInt(Messages.ENTER_YOUR_CHOICE);
         switch (choice) {
@@ -141,11 +141,11 @@ public class Menu {
         //display all records first
         switch (transactionType) {
             case INCOME:
-                ConsolePrinter.printMessageLine(listToString(budget.fetchIncomeList(true)));
+                ConsolePrinter.printMessageLine(TransactionDataOutput.listTransactionsAsString(budget.getTransactionRepository(), TransactionType.INCOME));
                 ConsolePrinter.printSeparator('-', 50);
                 break;
             case EXPENDITURE:
-                ConsolePrinter.printMessageLine(listToString(budget.fetchExpenseList(true)));
+                ConsolePrinter.printMessageLine(TransactionDataOutput.listTransactionsAsString(budget.getTransactionRepository(), TransactionType.EXPENDITURE));
                 ConsolePrinter.printSeparator('-', 50);
                 break;
             default:
@@ -153,13 +153,13 @@ public class Menu {
         }
         int choice = userInput.enterInt(Messages.ENTER_IDTODELETE);
 
-        boolean deleteOperationResult = budget.deleteRecord(choice);
-
-        if (deleteOperationResult) {
+        try {
+            budget.getTransactionRepository().deleteRecordByLocalId(choice);
             ConsolePrinter.printMessageLine(ColorsText.ANSI_GREEN, Messages.OPERATION_SUCCESFUL);
-        } else {
+        } catch (Exception e) {
             ConsolePrinter.printMessageLine(ColorsText.ANSI_RED, Messages.RECORD_DOESNT_EXIST);
         }
+
         deleteRecordSubmenu();
     }
 
@@ -175,14 +175,14 @@ public class Menu {
 
     private void listAllExpensesSubmenu() throws Exception {
         ConsolePrinter.printMessageLine(ColorsText.ANSI_YELLOW, Messages.TOTAL_EXPENSES);
-        ConsolePrinter.printMessageLine(listToString(budget.fetchExpenseList(true)));
+        ConsolePrinter.printMessage(TransactionDataOutput.listTransactionsAsString(budget.getTransactionRepository(),TransactionType.EXPENDITURE));
         pressEnterKeyToContinue();
         mainMenu();
     }
 
     private void listAllIncomeSubmenu() throws Exception {
         ConsolePrinter.printMessageLine(ColorsText.ANSI_YELLOW, Messages.TOTAL_INCOME);
-        ConsolePrinter.printMessageLine(listToString(budget.fetchIncomeList(true)));
+        ConsolePrinter.printMessage(TransactionDataOutput.listTransactionsAsString(budget.getTransactionRepository(),TransactionType.INCOME));
         pressEnterKeyToContinue();
         mainMenu();
     }
@@ -273,17 +273,17 @@ public class Menu {
         }
     }
 
-    /**
-     * converts string list into single string, where every entry is separated with newline
-     *
-     * @param arrayProvided
-     * @return
-     */
-    private String listToString(List<String> arrayProvided) {
-        StringBuilder sb = new StringBuilder();
-        for (String s : arrayProvided) {
-            sb.append(s + "\n");
-        }
-        return sb.toString();
-    }
+//    /**
+//     * converts string list into single string, where every entry is separated with newline
+//     *
+//     * @param listProvided
+//     * @return
+//     */
+//    private String listToString(List<String> listProvided) {
+//        StringBuilder sb = new StringBuilder();
+//        for (String s : listProvided) {
+//            sb.append(s + "\n");
+//        }
+//        return sb.toString();
+//    }
 }

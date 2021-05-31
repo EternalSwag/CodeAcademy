@@ -70,15 +70,15 @@ public class Budget {
      * @param startsFromOne
      * @return
      */
-    public List<String> fetchIncomeList(boolean startsFromOne) {
-        ArrayList<String> incomeOperations = getOperationListToStringList(transactionRepository.getRecordsByTransactionType(TransactionType.INCOME), startsFromOne);
-        return incomeOperations;
-    }
-
-    public List<String> fetchExpenseList(boolean startsFromOne) {
-        ArrayList<String> expenseOperations = getOperationListToStringList(transactionRepository.getRecordsByTransactionType(TransactionType.EXPENDITURE), startsFromOne);
-        return expenseOperations;
-    }
+//    public List<String> fetchIncomeList(boolean startsFromOne) {
+//        ArrayList<String> incomeOperations = getOperationListToStringList(transactionRepository.getRecordsByTransactionType(TransactionType.INCOME), startsFromOne);
+//        return incomeOperations;
+//    }
+//
+//    public List<String> fetchExpenseList(boolean startsFromOne) {
+//        ArrayList<String> expenseOperations = getOperationListToStringList(transactionRepository.getRecordsByTransactionType(TransactionType.EXPENDITURE), startsFromOne);
+//        return expenseOperations;
+//    }
 
     /**
      * updates balance and provides string of basic information of budget

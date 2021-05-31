@@ -92,4 +92,5 @@ public class TransactionRepository {
                 " This transaction with id " + localId + " doesn't exist");
         transactions.remove(transactionToDelete);
     }
+
 }
