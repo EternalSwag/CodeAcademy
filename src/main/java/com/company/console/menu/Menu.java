@@ -1,15 +1,17 @@
 package com.company.console.menu;
 
-import com.company.console.menu.colortext.ColorsBackground;
+import com.company.config.Constants;
 import com.company.console.menu.colortext.ColorsText;
 import com.company.core.Budget;
 import com.company.core.enums.*;
-import com.company.core.modules.RecordAbstract;
-import com.company.core.modules.transactions.ExpenditureRecord;
-import com.company.core.modules.transactions.IncomeRecord;
+import com.company.core.model.RecordAbstract;
+import com.company.core.model.transactions.ExpenditureRecord;
+import com.company.core.model.transactions.IncomeRecord;
 import com.company.core.services.TransactionDataOutput;
+import com.company.core.services.fileio.CsvOperationsRead;
+import com.company.core.services.fileio.CsvOperationsWrite;
 
-import java.io.Console;
+import java.lang.module.Configuration;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -79,6 +81,12 @@ public class Menu {
             case 6:
                 deleteRecordSubmenu();
                 break;
+            case 7:
+                writeAllRecordsToFileMenu();
+                break;
+            case 8:
+                readAllRecordsFromFileMenu();
+                break;
             case 0:
                 exit();
                 break;
@@ -88,36 +96,69 @@ public class Menu {
         }
     }
 
+    private void readAllRecordsFromFileMenu() throws Exception {
+         budget.setTransactionRepository(CsvOperationsRead.getTransactionListFromFile(Constants.BUDGET_FILE_PATH, 0));
+    mainMenu();
+    }
+
+    private void writeAllRecordsToFileMenu() throws Exception {
+        CsvOperationsWrite.writeToFileTransactionRepository(budget.getTransactionRepository(), Constants.BUDGET_FILE_PATH);
+        mainMenu();
+    }
+
+
+
     private void updateRecordSubmenu() throws Exception {
-        int mainSelection = userInput.enterInt(Messages.ENTER_ID_OF_RECORD_TO_UPDATE);
-        RecordAbstract selectedTransaction = budget.getTransactionRepository().getRecordByLocalId(mainSelection);
+        int selectedId = userInput.enterInt(Messages.ENTER_ID_OF_RECORD_TO_UPDATE);
+        RecordAbstract selectedTransaction = budget.getTransactionRepository().getRecordByLocalId(selectedId);
         if (selectedTransaction != null) {
             TransactionType transactionType = selectedTransaction.getTransactionType();
             switch (transactionType) {
                 case INCOME:
-                    updateIncomeRecordByEachFieldMenu(mainSelection);
+                    updateRecordByEachFieldMenu(TransactionType.INCOME, selectedId);
                     break;
                 case EXPENDITURE:
-                    updateExpenditureRecordByEachFieldMenu(mainSelection);
+                    updateRecordByEachFieldMenu(TransactionType.EXPENDITURE, selectedId);
                     break;
                 default:
                     ConsolePrinter.printMessageLine(Messages.UNKNOWN_TRANSACTION_TYPE);
+                    throw new Exception("Menu->updateRecordSubmenu: id " + selectedId + ", " + Messages.UNKNOWN_TRANSACTION_TYPE);
             }
         } else {
-            ConsolePrinter.printMessageLine("The transaction with id " + mainSelection + " doesn't exist");
+            throw new Exception("Menu->updateRecordSubmenu: the transaction with id " + selectedId + " doesn't exist");
         }
         mainMenu();
     }
 
-    private void updateExpenditureRecordByEachFieldMenu(int localTransactionId) throws Exception {
-        addRecordMenu(localTransactionId, TransactionType.EXPENDITURE, true);
+    /**
+     * prompts record data user is editing, makes him enter new data, and overwrites it
+     * @param transactionType
+     * @param localTransactionId
+     * @throws Exception
+     */
+    private void updateRecordByEachFieldMenu(TransactionType transactionType, int localTransactionId) throws Exception {
+        ConsolePrinter.printMessageLine(ColorsText.ANSI_RED, budget.getTransactionRepository().getRecordByLocalId(localTransactionId).toString());
+        ConsolePrinter.printMessageLine("You are now editing this record: ");
+        RecordAbstract updatedIncomeRecord = null;
+        switch (transactionType) {
+            case INCOME:
+                updatedIncomeRecord = menuEnterIncome(localTransactionId);
+                break;
+            case EXPENDITURE:
+                updatedIncomeRecord = menuEnterExpenditure(localTransactionId);
+                break;
+            default:
+                throw new Exception("Menu->updateRecordByEachFieldMenu: unknown transaction type provided");
+        }
+        budget.getTransactionRepository().updateRecord(localTransactionId, updatedIncomeRecord);
     }
 
-    private void updateIncomeRecordByEachFieldMenu(int localTransactionId) throws Exception {
-        addRecordMenu(localTransactionId, TransactionType.INCOME, true);
-    }
 
-
+    /**
+     * asks user which type of record they want to delete
+     *
+     * @throws Exception
+     */
     private void deleteRecordSubmenu() throws Exception {
         deleteSubmenuMessage();
         int choice = userInput.enterInt(Messages.ENTER_YOUR_CHOICE);
@@ -137,6 +178,13 @@ public class Menu {
         }
     }
 
+    /**
+     * displays records by transaction type and prompts user to choose which one to delete.
+     * should be 2 methods probably
+     *
+     * @param transactionType
+     * @throws Exception
+     */
     private void deleteMenu(TransactionType transactionType) throws Exception {
         //display all records first
         switch (transactionType) {
@@ -157,9 +205,9 @@ public class Menu {
             budget.getTransactionRepository().deleteRecordByLocalId(choice);
             ConsolePrinter.printMessageLine(ColorsText.ANSI_GREEN, Messages.OPERATION_SUCCESFUL);
         } catch (Exception e) {
-            ConsolePrinter.printMessageLine(ColorsText.ANSI_RED, Messages.RECORD_DOESNT_EXIST);
+            //ConsolePrinter.printMessageLine(ColorsText.ANSI_RED, Messages.RECORD_DOESNT_EXIST);
+            ConsolePrinter.printMessageLine(ColorsText.ANSI_RED, e.getMessage());
         }
-
         deleteRecordSubmenu();
     }
 
@@ -173,65 +221,89 @@ public class Menu {
         System.exit(0);
     }
 
-    private void listAllExpensesSubmenu() throws Exception {
-        ConsolePrinter.printMessageLine(ColorsText.ANSI_YELLOW, Messages.TOTAL_EXPENSES);
-        ConsolePrinter.printMessage(TransactionDataOutput.listTransactionsAsString(budget.getTransactionRepository(),TransactionType.EXPENDITURE));
-        pressEnterKeyToContinue();
-        mainMenu();
-    }
-
-    private void listAllIncomeSubmenu() throws Exception {
-        ConsolePrinter.printMessageLine(ColorsText.ANSI_YELLOW, Messages.TOTAL_INCOME);
-        ConsolePrinter.printMessage(TransactionDataOutput.listTransactionsAsString(budget.getTransactionRepository(),TransactionType.INCOME));
-        pressEnterKeyToContinue();
-        mainMenu();
-    }
-
-
     /**
-     * menu to update record and write it to repository
+     * lists all expenditure in console
      *
-     * @param localId
-     * @param transactionType
-     * @param isThisEdit
      * @throws Exception
      */
-    private void addRecordMenu(int localId, TransactionType transactionType, boolean isThisEdit) throws Exception {
-        if (isThisEdit) {
-            ConsolePrinter.printMessageLine("You decided update this record:");
-            ConsolePrinter.printMessageLine(ColorsText.ANSI_RED, budget.getTransactionRepository().getRecordByLocalId(localId).toString());
-        }
+    private void listAllExpensesSubmenu() throws Exception {
+        ConsolePrinter.printMessageLine(ColorsText.ANSI_YELLOW, Messages.TOTAL_EXPENSES);
+        ConsolePrinter.printMessage(TransactionDataOutput.listTransactionsAsString(budget.getTransactionRepository(), TransactionType.EXPENDITURE));
+        pressEnterKeyToContinue();
+        mainMenu();
+    }
 
+    /**
+     * lists all income in console
+     *
+     * @throws Exception
+     */
+    private void listAllIncomeSubmenu() throws Exception {
+        ConsolePrinter.printMessageLine(ColorsText.ANSI_YELLOW, Messages.TOTAL_INCOME);
+        ConsolePrinter.printMessage(TransactionDataOutput.listTransactionsAsString(budget.getTransactionRepository(), TransactionType.INCOME));
+        pressEnterKeyToContinue();
+        mainMenu();
+    }
+
+    /**
+     * adds record to repository
+     *
+     * @param transactionType income or expenditure
+     * @throws Exception
+     */
+    private void addRecordMenu(TransactionType transactionType) throws Exception {
+        RecordAbstract resultRecord = null;
+        switch (transactionType) {
+            case INCOME:
+                resultRecord = menuEnterIncome(budget.getTransactionRepository().getLocalIdCounter() + 1);
+                break;
+            case EXPENDITURE:
+                resultRecord = menuEnterExpenditure(budget.getTransactionRepository().getLocalIdCounter() + 1);
+                break;
+            default:
+                throw new Exception("Menu->addRecordMenu: unknown transaction type");
+        }
+        budget.getTransactionRepository().createTransaction(resultRecord);
+        mainMenu();
+    }
+
+    /**
+     * series of menu input to make income transaction
+     *
+     * @return result income transaction
+     */
+    private IncomeRecord menuEnterIncome(int localIdProvided) {
         LocalDateTime providedDate = userInput.enterDateTime();
         BigDecimal providedSum = userInput.enterBigDecimal(Messages.ENTER_SUM);
         TransactionCategory providedCategory = userInput.enterCategory();
         PaymentMethod providedPaymentMethod = userInput.enterPaymentMethod();
+        IncomeType incomeType = userInput.enterIncomeType();
         String providedInfo = userInput.enterString(Messages.ENTER_ADDITIONAL_INFO);
-
-        RecordAbstract updatedTransaction;
-
-        switch (transactionType) {
-            case INCOME:
-                IncomeType incomeType = userInput.enterIncomeType();
-                updatedTransaction = new IncomeRecord(budget.getLocalRecordCount(), providedDate, providedSum, providedCategory, providedPaymentMethod, incomeType, providedInfo);
-                break;
-            case EXPENDITURE:
-                ExpenditureType expenditureType = userInput.enterExpenditureType();
-                updatedTransaction = new ExpenditureRecord(budget.getLocalRecordCount(), providedDate, providedSum, providedCategory, providedPaymentMethod, expenditureType, providedInfo);
-                break;
-            default:
-                throw new Exception("Menu->addRecordMenu: unknown transaction type provided");
-        }
-        budget.getTransactionRepository().updateRecord(localId, updatedTransaction);
-        mainMenu();
+        return new IncomeRecord(localIdProvided, providedDate, providedSum, providedCategory, providedPaymentMethod, incomeType, providedInfo);
     }
 
+    /**
+     * series of menu input to make expenditure transaction
+     *
+     * @return result expenditure transaction
+     */
+    private ExpenditureRecord menuEnterExpenditure(int localIdProvided) {
+        LocalDateTime providedDate = userInput.enterDateTime();
+        BigDecimal providedSum = userInput.enterBigDecimal(Messages.ENTER_SUM);
+        TransactionCategory providedCategory = userInput.enterCategory();
+        PaymentMethod providedPaymentMethod = userInput.enterPaymentMethod();
+        ExpenditureType expenditureType = userInput.enterExpenditureType();
+        String providedInfo = userInput.enterString(Messages.ENTER_ADDITIONAL_INFO);
+        return new ExpenditureRecord(localIdProvided, providedDate, providedSum, providedCategory, providedPaymentMethod, expenditureType, providedInfo);
+    }
+
+
     private void addExpenseRecordSubmenu() throws Exception {
-        addRecordMenu(budget.getLocalRecordCount(), TransactionType.EXPENDITURE, false);
+        addRecordMenu(TransactionType.EXPENDITURE);
     }
 
     private void addIncomeRecordSubmenu() throws Exception {
-        addRecordMenu(budget.getLocalRecordCount(), TransactionType.INCOME, false);
+        addRecordMenu(TransactionType.INCOME);
     }
 
 
@@ -272,18 +344,4 @@ public class Menu {
         } catch (Exception e) {
         }
     }
-
-//    /**
-//     * converts string list into single string, where every entry is separated with newline
-//     *
-//     * @param listProvided
-//     * @return
-//     */
-//    private String listToString(List<String> listProvided) {
-//        StringBuilder sb = new StringBuilder();
-//        for (String s : listProvided) {
-//            sb.append(s + "\n");
-//        }
-//        return sb.toString();
-//    }
 }

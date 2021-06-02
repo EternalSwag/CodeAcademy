@@ -1,16 +1,18 @@
 package com.company.core.repositories;
 
 import com.company.core.enums.TransactionType;
-import com.company.core.modules.RecordAbstract;
+import com.company.core.model.RecordAbstract;
+import com.company.core.services.fileio.CsvReadableWriteable;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-public class TransactionRepository {
+public class TransactionRepository implements CsvReadableWriteable {
 
     private List<RecordAbstract> transactions = new ArrayList<>();
+    private int localIdCounter = 0;
 
     //CREATE
 
@@ -20,7 +22,9 @@ public class TransactionRepository {
      * @param record
      * @return global id (UUID)
      */
-    public UUID createTransaction(RecordAbstract record) {
+    public UUID createTransaction(RecordAbstract record) throws Exception {
+        this.localIdCounter++;
+        record.setLocalId(this.localIdCounter);
         transactions.add(record);
         return record.getGlobalId();
     }
@@ -37,7 +41,7 @@ public class TransactionRepository {
     }
 
     /**
-     * filter transactions by transaction type
+     * filters transactions by transaction type
      *
      * @param transactionType
      * @return list of transactions by provided criteria
@@ -83,14 +87,33 @@ public class TransactionRepository {
 
     /**
      * deletes transaction by local id provided
+     *
      * @param localId
      * @throws Exception if it doesn't exist
      */
     public void deleteRecordByLocalId(int localId) throws Exception {
         RecordAbstract transactionToDelete = getRecordByLocalId(localId);
-        if (transactionToDelete==null) throw new Exception("TransactionRepository->DeleteRecordByLocalId:" +
+        if (transactionToDelete == null) throw new Exception("TransactionRepository->DeleteRecordByLocalId:" +
                 " This transaction with id " + localId + " doesn't exist");
         transactions.remove(transactionToDelete);
     }
 
+    /**
+     * return last localId
+     * @return
+     */
+    public int getLocalIdCounter() {
+        return localIdCounter;
+    }
+
+    @Override
+    public String writeToCsv(String destinationFileName) {
+
+        return null;
+    }
+
+    @Override
+    public List readCSVData(String sourceFileName) {
+        return null;
+    }
 }

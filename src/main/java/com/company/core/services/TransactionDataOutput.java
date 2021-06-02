@@ -1,7 +1,7 @@
 package com.company.core.services;
 
 import com.company.core.enums.TransactionType;
-import com.company.core.modules.RecordAbstract;
+import com.company.core.model.RecordAbstract;
 import com.company.core.repositories.TransactionRepository;
 
 import java.util.ArrayList;
@@ -14,7 +14,7 @@ public class TransactionDataOutput {
      * returns all transactions (income, expense)
      *
      * @param transactionRepository
-     * @return
+     * @return list of strings of all transactions
      */
     public static List<String> listTransactions(TransactionRepository transactionRepository) {
         List<String> resultList = new ArrayList<>();
@@ -30,7 +30,7 @@ public class TransactionDataOutput {
      *
      * @param transactionRepository
      * @param transactionType
-     * @return
+     * @return list of strings of all transactions
      */
     public static List<String> listTransactions(TransactionRepository transactionRepository, TransactionType transactionType) {
         List<String> resultList = new ArrayList<>();

@@ -1,9 +1,11 @@
 package com.company.core;
 
+import com.company.console.menu.ConsolePrinter;
+import com.company.console.menu.colortext.ColorsText;
 import com.company.core.enums.*;
-import com.company.core.modules.RecordAbstract;
-import com.company.core.modules.transactions.ExpenditureRecord;
-import com.company.core.modules.transactions.IncomeRecord;
+import com.company.core.model.RecordAbstract;
+import com.company.core.model.transactions.ExpenditureRecord;
+import com.company.core.model.transactions.IncomeRecord;
 import com.company.core.repositories.TransactionRepository;
 
 import java.math.BigDecimal;
@@ -15,23 +17,11 @@ public class Budget {
 
     private BigDecimal balance;
     private TransactionRepository transactionRepository;
-    private int localRecordCount = 0;
+    //private int localRecordCount = 0;
 
     public Budget() {
         balance = new BigDecimal("0");
         transactionRepository = new TransactionRepository();
-    }
-
-    public void addIncome(LocalDateTime date, BigDecimal sum, TransactionCategory category, PaymentMethod paymentMethod, IncomeType incomeType, String info) {
-        RecordAbstract createdIncome = new IncomeRecord(localRecordCount, date, sum, category, paymentMethod, incomeType, info);
-        transactionRepository.createTransaction(createdIncome);
-        localRecordCount++;
-    }
-
-    public void addExpenditure(LocalDateTime date, BigDecimal sum, TransactionCategory category, PaymentMethod paymentMethod, ExpenditureType expenditureType, String info) {
-        RecordAbstract createdExpenditure = new ExpenditureRecord(localRecordCount, date, sum, category, paymentMethod, expenditureType, info);
-        transactionRepository.createTransaction(createdExpenditure);
-        localRecordCount++;
     }
 
     /**
@@ -65,22 +55,6 @@ public class Budget {
     }
 
     /**
-     * provides String result of income
-     *
-     * @param startsFromOne
-     * @return
-     */
-//    public List<String> fetchIncomeList(boolean startsFromOne) {
-//        ArrayList<String> incomeOperations = getOperationListToStringList(transactionRepository.getRecordsByTransactionType(TransactionType.INCOME), startsFromOne);
-//        return incomeOperations;
-//    }
-//
-//    public List<String> fetchExpenseList(boolean startsFromOne) {
-//        ArrayList<String> expenseOperations = getOperationListToStringList(transactionRepository.getRecordsByTransactionType(TransactionType.EXPENDITURE), startsFromOne);
-//        return expenseOperations;
-//    }
-
-    /**
      * updates balance and provides string of basic information of budget
      */
     public String info() {
@@ -97,11 +71,11 @@ public class Budget {
     }
 
     private BigDecimal totalIncome() {
-        return totalSumOfRecords((List<RecordAbstract>) (List<? extends RecordAbstract>) transactionRepository.getRecordsByTransactionType(TransactionType.INCOME));
+        return totalSumOfRecords(transactionRepository.getRecordsByTransactionType(TransactionType.INCOME));
     }
 
     private BigDecimal totalExpenses() {
-        return totalSumOfRecords((List<RecordAbstract>) (List<? extends RecordAbstract>) transactionRepository.getRecordsByTransactionType(TransactionType.EXPENDITURE));
+        return totalSumOfRecords(transactionRepository.getRecordsByTransactionType(TransactionType.EXPENDITURE));
     }
 
     /**
@@ -119,60 +93,27 @@ public class Budget {
     }
 
     /**
-     * returns record by provided local id (any, income or expense)
-     *
-     * @param id
-     * @return record matching id, or null if found not any
-     */
-    public RecordAbstract getRecordByLocalId(int id) {
-        RecordAbstract matchingObject = transactionRepository.getRecordByLocalId(id);
-        return matchingObject;
-    }
-
-    /**
-     * returns record by provided local id (specified in income or expense list)
-     *
-     * @param id
-     * @return record matching conditions, or null if found not any
-     */
-    private RecordAbstract getRecordByLocalIdSpecified(List<RecordAbstract> particularList, int id) {
-        RecordAbstract matchingObject = particularList.stream().
-                filter(p -> p.getLocalId() == id).
-                findAny().orElse(null);
-        return matchingObject;
-    }
-
-    /**
-     * Deletes record by provided local id
-     *
-     * @param localId - local id of record
-     * @return true if deletion successful, false if no such record found
-     */
-    public boolean deleteRecord(int localId) {
-        try {
-            transactionRepository.deleteRecordByLocalId(localId);
-        } catch (Exception e) {
-            return false;
-        }
-        return true;
-    }
-
-    /**
      * Adds sample entries to this budget. For testing purposes
      */
-    public void addSampleRecords() {
-        this.addIncome(LocalDateTime.now(), new BigDecimal("2500"), TransactionCategory.ASSET, PaymentMethod.BANK_TRANSACTION, IncomeType.SALARY, "Salary");
-        this.addIncome(LocalDateTime.now(), new BigDecimal("2800"), TransactionCategory.ASSET, PaymentMethod.BANK_TRANSACTION, IncomeType.SALARY, "Salary");
-        this.addIncome(LocalDateTime.now(), new BigDecimal("2200"), TransactionCategory.ASSET, PaymentMethod.BANK_TRANSACTION, IncomeType.SALARY, "Salary");
-        this.addExpenditure(LocalDateTime.now(), new BigDecimal("50"), TransactionCategory.EXPENSES, PaymentMethod.CASH, ExpenditureType.GROCERIES, "bottle of whiskey");
-        this.addExpenditure(LocalDateTime.now(), new BigDecimal("15"), TransactionCategory.EXPENSES, PaymentMethod.CASH, ExpenditureType.LUXURY_GOODS, "a cigar");
+    public void addSampleRecords() throws Exception {
+        try {
+
+            transactionRepository.createTransaction(new IncomeRecord(LocalDateTime.now(), new BigDecimal("2500"), TransactionCategory.ASSET, PaymentMethod.BANK_TRANSACTION, TransactionType.INCOME, IncomeType.SALARY, "Salary - another day another dollar"));
+            transactionRepository.createTransaction(new IncomeRecord(LocalDateTime.now(), new BigDecimal("2800"), TransactionCategory.ASSET, PaymentMethod.BANK_TRANSACTION, TransactionType.INCOME, IncomeType.SALARY, "Salary - hard work"));
+            transactionRepository.createTransaction(new IncomeRecord(LocalDateTime.now(), new BigDecimal("3300"), TransactionCategory.ASSET, PaymentMethod.BANK_TRANSACTION, TransactionType.INCOME, IncomeType.SALARY, "Salary - good bux"));
+
+            transactionRepository.createTransaction(new ExpenditureRecord(LocalDateTime.now(), new BigDecimal("50"), TransactionCategory.ASSET, PaymentMethod.BANK_TRANSACTION, TransactionType.EXPENDITURE, ExpenditureType.GROCERIES, "Bottle of whiskey"));
+            transactionRepository.createTransaction(new ExpenditureRecord(LocalDateTime.now(), new BigDecimal("20"), TransactionCategory.ASSET, PaymentMethod.BANK_TRANSACTION, TransactionType.EXPENDITURE,ExpenditureType.LUXURY_GOODS, "A cigar"));
+        } catch (Exception e) {
+            ConsolePrinter.printMessageLine(ColorsText.ANSI_RED, e.getMessage());
+        }
     }
 
     public TransactionRepository getTransactionRepository() {
         return transactionRepository;
     }
 
-    public int getLocalRecordCount() {
-        return localRecordCount;
+    public void setTransactionRepository(TransactionRepository transactionRepository) {
+        this.transactionRepository = transactionRepository;
     }
 }

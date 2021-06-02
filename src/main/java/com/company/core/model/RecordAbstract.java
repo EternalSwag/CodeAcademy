@@ -1,4 +1,4 @@
-package com.company.core.modules;
+package com.company.core.model;
 
 import com.company.core.enums.PaymentMethod;
 import com.company.core.enums.TransactionCategory;
@@ -13,8 +13,8 @@ import java.util.UUID;
 
 public abstract class RecordAbstract {
 
-    private final UUID globalId;
-    private final int localId;
+    private UUID globalId;
+    private int localId;
 
     private LocalDateTime dateTime;
     private BigDecimal sum;
@@ -32,7 +32,15 @@ public abstract class RecordAbstract {
         this.transactionType = transactionType;
         this.additionalInfo = additionalInfo;
         this.globalId = UUID.randomUUID();
+    }
 
+    public RecordAbstract(LocalDateTime dateTime, BigDecimal sum, TransactionCategory transactionCategory, PaymentMethod paymentMethod, TransactionType transactionType, String additionalInfo) {
+        this.dateTime = dateTime;
+        this.sum = sum;
+        this.transactionCategory = transactionCategory;
+        this.paymentMethod = paymentMethod;
+        this.transactionType = transactionType;
+        this.additionalInfo = additionalInfo;
     }
 
     public BigDecimal getSum() {
@@ -59,9 +67,13 @@ public abstract class RecordAbstract {
         return globalId;
     }
 
+    public LocalDateTime getDateTime() {
+        return dateTime;
+    }
 
     /**
      * formats decimal to have 2 decimal numbers
+     *
      * @param value
      * @return
      */
@@ -74,9 +86,6 @@ public abstract class RecordAbstract {
         return transactionType;
     }
 
-    public void setTransactionType(TransactionType transactionType) {
-        this.transactionType = transactionType;
-    }
 
     @Override
     public String toString() {
@@ -98,7 +107,12 @@ public abstract class RecordAbstract {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         RecordAbstract that = (RecordAbstract) o;
-        return Objects.equals(globalId, that.globalId);
+        return Objects.equals(localId, that.localId);
     }
 
+    public void setLocalId(int localId) {
+        this.localId = localId;
+    }
+
+    public abstract String toCsvString();
 }

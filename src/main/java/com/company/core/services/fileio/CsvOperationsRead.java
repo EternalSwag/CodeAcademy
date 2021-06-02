@@ -1,7 +1,10 @@
 package com.company.core.services.fileio;
 
 import com.company.config.Constants;
+import com.company.core.enums.*;
 import com.company.core.model.RecordAbstract;
+import com.company.core.model.transactions.ExpenditureRecord;
+import com.company.core.model.transactions.IncomeRecord;
 import com.company.core.repositories.TransactionRepository;
 
 import java.io.BufferedReader;
@@ -9,10 +12,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
-public class CsvOperations {
+public class CsvOperationsRead {
 
-    public TransactionRepository getTransactionListFromFile(String fileName, int firstLinesToSkip) throws Exception {
+    public static TransactionRepository getTransactionListFromFile(String fileName, int firstLinesToSkip) throws Exception {
 
         TransactionRepository transactionRepository = new TransactionRepository();
 
@@ -23,8 +28,9 @@ public class CsvOperations {
             while ((line = br.readLine()) != null) {
                 if (firstLinesToSkip <= 0) {
                     RecordAbstract currentRecord = makeRecordFromCSVLine(line);
-                    //todo
-                    // if (currentRecord != null) transactionRepository.createTransaction()
+                    if (currentRecord != null) {
+                        transactionRepository.createTransaction(currentRecord);
+                    }
                 }
                 firstLinesToSkip--;
             }
@@ -34,31 +40,39 @@ public class CsvOperations {
     }
 
 
-    public RecordAbstract makeRecordFromCSVLine(String line) throws Exception {
+    public static RecordAbstract makeRecordFromCSVLine(String line) throws Exception {
         String[] separatedWords = processCSVLine(line, Constants.CSV_FILE_SEPARATING_SYMBOL);
-        if (separatedWords.length != 4) {
-            throw new Exception("Payment list has invalid entry, line " + line);
+        if (separatedWords.length != 8) {
+            throw new Exception("Record list has invalid entry, line " + line);
         }
 
-        int transactionId = 0;
-        BigDecimal sum = null;
-        int toId = 0;
-        int fromId = 0;
-        try {
-            transactionId = Integer.valueOf(separatedWords[0]);
-            sum = new BigDecimal(separatedWords[1]);
-            toId = Integer.valueOf(separatedWords[2]);
-            fromId = Integer.valueOf(separatedWords[3]);
-        } catch (NumberFormatException e) {
-            System.out.println("Format error processing line: " + line);
+        int localId = Integer.parseInt(separatedWords[0]);
+        LocalDateTime date = LocalDateTime.parse(separatedWords[1]);
+        BigDecimal sum = new BigDecimal(separatedWords[2]);
+        TransactionCategory transactionCategory = TransactionCategory.valueOf(separatedWords[3]);
+        PaymentMethod paymentMethod = PaymentMethod.valueOf(separatedWords[4]);
+        TransactionType transactionType = TransactionType.valueOf(separatedWords[5]);
+        String additionalInfo = separatedWords[7];
+
+        RecordAbstract resultRecord;
+
+        switch (separatedWords[5]) {
+            case "INCOME":
+                IncomeType incomeType = IncomeType.valueOf(separatedWords[6]);
+                resultRecord = new IncomeRecord(localId, date, sum, transactionCategory, paymentMethod, incomeType, additionalInfo);
+                break;
+            case "EXPENDITURE":
+                ExpenditureType expenditureType = ExpenditureType.valueOf(separatedWords[6]);
+                resultRecord = new ExpenditureRecord(localId, date, sum, transactionCategory, paymentMethod, expenditureType, additionalInfo);
+                break;
+            default:
+                throw new Exception("CsvOperations->makeRecordFromCSVLine: uknown type of transaction, line " + line);
         }
 
-        return null;
-        // return new RecordAbstract(transactionId, sum, toId, fromId) {
+        return resultRecord;
     }
 
-
-    private String[] processCSVLine(String line, String separatorSymbol) {
+    private static String[] processCSVLine(String line, String separatorSymbol) {
         line = initialCSVLineProcess(line);
         String[] separatedWords = splitterLineCSV(line, separatorSymbol);
         return separatedWords;
@@ -69,7 +83,7 @@ public class CsvOperations {
      *
      * @return
      */
-    private String initialCSVLineProcess(String rawCSVLine) {
+    private static String initialCSVLineProcess(String rawCSVLine) {
         String result = rawCSVLine.trim();
         result = result.replaceAll("\\s+", "");
         return result;
@@ -82,7 +96,7 @@ public class CsvOperations {
      * @param separatorSymbol
      * @return
      */
-    private String[] splitterLineCSV(String line, String separatorSymbol) {
+    private static String[] splitterLineCSV(String line, String separatorSymbol) {
         String[] result = line.split(separatorSymbol);
         return result;
     }
