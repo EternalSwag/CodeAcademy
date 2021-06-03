@@ -17,7 +17,6 @@ public class Budget {
 
     private BigDecimal balance;
     private TransactionRepository transactionRepository;
-    //private int localRecordCount = 0;
 
     public Budget() {
         balance = new BigDecimal("0");

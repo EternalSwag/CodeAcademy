@@ -62,4 +62,5 @@ public class Messages {
             "4. Other\n";
     public static final String ENTER_ID_OF_RECORD_TO_UPDATE = "Enter id of record to update: \n" ;
     public static final String UNKNOWN_TRANSACTION_TYPE = "Unknown transaction type";
+    public static final String YOU_ARE_NOW_EDITING_THIS_RECORD = "You are now editing this record: " ;
 }

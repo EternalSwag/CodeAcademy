@@ -12,11 +12,18 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class CsvOperationsRead {
 
+
+    /**
+     * loads transaction from file
+     * @param fileName source file path
+     * @param firstLinesToSkip number of lines to skip (to ignore header)
+     * @return
+     * @throws Exception
+     */
     public static TransactionRepository getTransactionListFromFile(String fileName, int firstLinesToSkip) throws Exception {
 
         TransactionRepository transactionRepository = new TransactionRepository();
@@ -35,11 +42,16 @@ public class CsvOperationsRead {
                 firstLinesToSkip--;
             }
         }
-
         return transactionRepository;
     }
 
 
+    /**
+     * creates transaction record by reading provided line
+     * @param line string of line
+     * @return record, based on type is it income or expenditure
+     * @throws Exception
+     */
     public static RecordAbstract makeRecordFromCSVLine(String line) throws Exception {
         String[] separatedWords = processCSVLine(line, Constants.CSV_FILE_SEPARATING_SYMBOL);
         if (separatedWords.length != 8) {

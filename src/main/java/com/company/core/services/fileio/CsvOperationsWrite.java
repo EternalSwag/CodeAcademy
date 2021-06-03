@@ -26,10 +26,6 @@ public class CsvOperationsWrite {
             System.out.println("CsvOperationsWrite->writeToFileTransactionRepository: problem creating file " + destinationFilename);
         }
 
-        if (bufferedWriter == null) {
-            throw new Exception("CsvOperationsWrite->writeToFileTransactionRepository: error occured trying to write to file, failed to initiate buffer: " + destinationFilename);
-        }
-
         try {
             for (RecordAbstract currentRecord : transactionRepository.getAllRecords()) {
                 writeToBuffer(bufferedWriter, currentRecord.toCsvString());

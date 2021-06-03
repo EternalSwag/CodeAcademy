@@ -138,7 +138,7 @@ public class Menu {
      */
     private void updateRecordByEachFieldMenu(TransactionType transactionType, int localTransactionId) throws Exception {
         ConsolePrinter.printMessageLine(ColorsText.ANSI_RED, budget.getTransactionRepository().getRecordByLocalId(localTransactionId).toString());
-        ConsolePrinter.printMessageLine("You are now editing this record: ");
+        ConsolePrinter.printMessageLine(Messages.YOU_ARE_NOW_EDITING_THIS_RECORD);
         RecordAbstract updatedIncomeRecord = null;
         switch (transactionType) {
             case INCOME:
@@ -205,7 +205,6 @@ public class Menu {
             budget.getTransactionRepository().deleteRecordByLocalId(choice);
             ConsolePrinter.printMessageLine(ColorsText.ANSI_GREEN, Messages.OPERATION_SUCCESFUL);
         } catch (Exception e) {
-            //ConsolePrinter.printMessageLine(ColorsText.ANSI_RED, Messages.RECORD_DOESNT_EXIST);
             ConsolePrinter.printMessageLine(ColorsText.ANSI_RED, e.getMessage());
         }
         deleteRecordSubmenu();
