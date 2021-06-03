@@ -1,4 +1,4 @@
-package com.company.core.abstracts;
+package com.company.core.model;
 
 import com.company.core.enums.PaymentMethod;
 import com.company.core.enums.TransactionCategory;
@@ -8,12 +8,13 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 import java.util.UUID;
 
 public abstract class RecordAbstract {
 
-    private final UUID globalId;
-    private final int localId;
+    private UUID globalId;
+    private int localId;
 
     private LocalDateTime dateTime;
     private BigDecimal sum;
@@ -31,7 +32,15 @@ public abstract class RecordAbstract {
         this.transactionType = transactionType;
         this.additionalInfo = additionalInfo;
         this.globalId = UUID.randomUUID();
+    }
 
+    public RecordAbstract(LocalDateTime dateTime, BigDecimal sum, TransactionCategory transactionCategory, PaymentMethod paymentMethod, TransactionType transactionType, String additionalInfo) {
+        this.dateTime = dateTime;
+        this.sum = sum;
+        this.transactionCategory = transactionCategory;
+        this.paymentMethod = paymentMethod;
+        this.transactionType = transactionType;
+        this.additionalInfo = additionalInfo;
     }
 
     public BigDecimal getSum() {
@@ -58,15 +67,23 @@ public abstract class RecordAbstract {
         return globalId;
     }
 
+    public LocalDateTime getDateTime() {
+        return dateTime;
+    }
 
     /**
      * formats decimal to have 2 decimal numbers
+     *
      * @param value
      * @return
      */
     private BigDecimal formatBigDecimal(BigDecimal value) {
         DecimalFormat df = new DecimalFormat("####.00");
         return new BigDecimal(df.format(value));
+    }
+
+    public TransactionType getTransactionType() {
+        return transactionType;
     }
 
 
@@ -85,4 +102,17 @@ public abstract class RecordAbstract {
 
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        RecordAbstract that = (RecordAbstract) o;
+        return Objects.equals(localId, that.localId);
+    }
+
+    public void setLocalId(int localId) {
+        this.localId = localId;
+    }
+
+    public abstract String toCsvString();
 }

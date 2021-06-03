@@ -1,5 +1,7 @@
 package com.company.console.menu;
 
+import com.company.core.enums.ExpenditureType;
+import com.company.core.enums.IncomeType;
 import com.company.core.enums.PaymentMethod;
 import com.company.core.enums.TransactionCategory;
 
@@ -105,9 +107,25 @@ public class UserConsoleInput {
     public TransactionCategory enterCategory() {
         int input = enterInt(Messages.ENTER_CATEGORY);
 
-        while (input < 1 || input > TransactionCategory.values().length - 1) {
+        while (input < 1 || input > TransactionCategory.values().length) {
             input = enterInt(Messages.MENU_WRONG_INPUT);
         }
         return TransactionCategory.values()[input - 1];
+    }
+
+    public IncomeType enterIncomeType() {
+        int input = enterInt(Messages.ENTER_INCOME_TYPE);
+        while (input < 1 || input > IncomeType.values().length) {
+            input = enterInt(Messages.MENU_WRONG_INPUT);
+        }
+        return IncomeType.values()[input - 1];
+    }
+
+    public ExpenditureType enterExpenditureType() {
+        int input = enterInt(Messages.ENTER_EXPENDITURE_TYPE);
+        while (input < 1 || input > ExpenditureType.values().length) {
+            input = enterInt(Messages.MENU_WRONG_INPUT);
+        }
+        return ExpenditureType.values()[input - 1];
     }
 }

@@ -43,10 +43,24 @@ public class Messages {
             "2. Add expense\n" +
             "3. List all income\n" +
             "4. List all expenses\n" +
-            "5. Delete record\n" +
+            "5. Edit record\n" +
+            "6. Delete record\n" +
+            "7. Write all records to file\n" +
+            "8. Load records from file\n" +
             "0. Exit\n";
     public static final String SELECT_SCENARIO = "Select scenario:\n" +
             "1. Start new budget from scratch\n" +
             "2. Use premade budget\n";
 
+    public static final String ENTER_INCOME_TYPE = "Enter income type: \n" +
+            "1. Salary\n" +
+            "2. Revenue\n";
+    public static final String ENTER_EXPENDITURE_TYPE = "Enter expenditure type: \n" +
+            "1. Groceries\n" +
+            "2. Consumer goods\n" +
+            "3. Luxury goods\n" +
+            "4. Other\n";
+    public static final String ENTER_ID_OF_RECORD_TO_UPDATE = "Enter id of record to update: \n" ;
+    public static final String UNKNOWN_TRANSACTION_TYPE = "Unknown transaction type";
+    public static final String YOU_ARE_NOW_EDITING_THIS_RECORD = "You are now editing this record: " ;
 }
